@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Seu Nome</title>
+<meta name="description" content="Meus vídeos e links.">
+<style>
+:root{
+  --bg:#fafaf9; --text:#1c1c1a; --muted:#77756f; --line:#e4e2dd; --hover:#f0eeea;
+}
+@media (prefers-color-scheme:dark){
+  :root{--bg:#171716; --text:#f1f0ec; --muted:#9a978f; --line:#2f2e2b; --hover:#222220}
+}
+*{box-sizing:border-box;margin:0}
+body{
+  background:var(--bg);color:var(--text);
+  font:400 1rem/1.6 system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;
+  -webkit-font-smoothing:antialiased;
+}
+main{width:min(520px,100% - 2.5rem);margin:0 auto;padding:5rem 0 3rem}
+a{color:inherit;text-decoration:none}
+:focus-visible{outline:2px solid var(--text);outline-offset:3px;border-radius:6px}
+
+.avatar{width:72px;height:72px;border-radius:50%;background:var(--line);display:grid;place-items:center;font-size:1.6rem;font-weight:600;overflow:hidden}
+.avatar img{width:100%;height:100%;object-fit:cover}
+h1{font-size:1.6rem;font-weight:600;letter-spacing:-.02em;margin-top:1.25rem}
+.bio{color:var(--muted);margin-top:.35rem}
+
+.links{margin-top:2rem;border-top:1px solid var(--line)}
+.links a{display:flex;justify-content:space-between;padding:.95rem .25rem;border-bottom:1px solid var(--line);transition:background .15s,padding .15s}
+.links a:hover{background:var(--hover);padding-inline:.75rem}
+.links span{color:var(--muted)}
+
+h2{font-size:.95rem;font-weight:600;color:var(--muted);margin:3rem 0 1rem}
+.video{display:grid;grid-template-columns:128px 1fr;gap:1rem;align-items:center;padding:.6rem 0}
+.video img,.video .ph{width:128px;aspect-ratio:16/9;border-radius:8px;object-fit:cover;background:var(--line)}
+.video p{font-weight:500;line-height:1.35}
+.video:hover p{text-decoration:underline;text-underline-offset:3px}
+
+/* ao vivo (Twitch) */
+.live{display:none;margin-top:2rem}
+.live.on{display:block}
+#twitch-embed iframe{width:100%;height:100%;border:0;display:block}
+.live-tag{display:inline-flex;align-items:center;gap:.5rem;font-size:.85rem;font-weight:600;color:#e5253d;margin-bottom:.6rem}
+.dot{width:8px;height:8px;border-radius:50%;background:#e5253d;animation:pulse 1.6s infinite}
+@keyframes pulse{50%{opacity:.3}}
+#twitch-embed{aspect-ratio:16/9;border-radius:10px;overflow:hidden;background:var(--line)}
+.links a.is-live span{color:#e5253d;font-weight:600}
+@media (prefers-reduced-motion:reduce){.dot{animation:none}}
+
+footer{margin-top:3.5rem;color:var(--muted);font-size:.9rem}
+footer a{text-decoration:underline;text-underline-offset:3px}
+</style>
+</head>
+<body>
+<main>
+  <div class="avatar" id="avatar" aria-hidden="true"></div>
+  <h1 id="nome"></h1>
+  <p class="bio" id="bio"></p>
+
+  <section class="live" id="live" aria-label="Transmissão ao vivo">
+    <div class="live-tag"><span class="dot"></span>AO VIVO AGORA</div>
+    <div id="twitch-embed"></div>
+  </section>
+
+  <nav class="links" id="links" aria-label="Links"></nav>
+
+  <h2>Vídeos</h2>
+  <div id="videos"></div>
+
+  <footer id="rodape"></footer>
+</main>
+
+<script>
+/* ===== EDITE AQUI ===== */
+const CONFIG = {
+  nome: "Brenkz",
+  avatar: "",                       // ex.: "avatar.jpg"
+  bio: "Vídeos sobre o que eu gosto de fazer.",
+  twitchCanal: "brenkzftw",          // só o nome do canal, ex.: "gaules" (sem link)
+  links: [
+    ["YouTube", "https://www.youtube.com/@SEUCANAL"],
+    ["Twitch",  "https://www.twitch.tv/brenkzftw"],
+    ["Discord", "https://discord.gg/SEU-CONVITE"]
+  ],
+  // ID do vídeo = o que vem depois de "v=" no link do YouTube
+  videos: [
+    ["COLE_O_ID_1", "Título do vídeo 1"],
+    ["COLE_O_ID_2", "Título do vídeo 2"],
+    ["COLE_O_ID_3", "Título do vídeo 3"]
+  ],
+  email: "seuemail@exemplo.com"
+};
+/* ======================= */
+
+const $ = id => document.getElementById(id);
+
+document.title = CONFIG.nome;
+$("nome").textContent = CONFIG.nome;
+$("bio").textContent = CONFIG.bio;
+
+const av = $("avatar");
+if (CONFIG.avatar) { const i = new Image(); i.src = CONFIG.avatar; i.alt = ""; av.appendChild(i); }
+else av.textContent = CONFIG.nome.trim().charAt(0).toUpperCase();
+
+$("links").innerHTML = CONFIG.links.map(([nome, url]) =>
+  `<a href="${url}" target="_blank" rel="noopener">${nome}<span aria-hidden="true">↗</span></a>`).join("");
+
+$("videos").innerHTML = CONFIG.videos.map(([id, titulo]) => {
+  const thumb = id.startsWith("COLE")
+    ? '<div class="ph"></div>'
+    : `<img src="https://i.ytimg.com/vi/${id}/mqdefault.jpg" alt="" loading="lazy">`;
+  const href = id.startsWith("COLE") ? CONFIG.links[0][1] : `https://www.youtube.com/watch?v=${id}`;
+  return `<a class="video" href="${href}" target="_blank" rel="noopener">${thumb}<p>${titulo}</p></a>`;
+}).join("");
+
+$("rodape").innerHTML = `<a href="mailto:${CONFIG.email}">${CONFIG.email}</a>`;
+
+/* ---- Twitch: mostra "ao vivo" quando o canal estiver online ---- */
+const twLink = [...document.querySelectorAll("#links a")].find(a => a.href.includes("twitch.tv"));
+let playerCriado = false;
+
+function setLive(on){
+  $("live").classList.toggle("on", on);
+  if (twLink){
+    twLink.classList.toggle("is-live", on);
+    twLink.querySelector("span").textContent = on ? "● ao vivo" : "↗";
+  }
+  if (on && !playerCriado){
+    playerCriado = true;
+    const host = location.hostname || "localhost";
+    $("twitch-embed").innerHTML =
+      `<iframe src="https://player.twitch.tv/?channel=${CONFIG.twitchCanal}&parent=${host}&muted=true&autoplay=false" allowfullscreen title="Live na Twitch"></iframe>`;
+  }
+}
+
+async function checarLive(){
+  try{
+    const r = await fetch(`https://decapi.me/twitch/uptime/${encodeURIComponent(CONFIG.twitchCanal)}`, {cache:"no-store"});
+    const txt = (await r.text()).toLowerCase();
+    const offline = /offline|not found|could not|error|invalid/.test(txt);
+    const online = !offline && /(second|minute|hour|day)/.test(txt);
+    setLive(online);
+  }catch(e){ /* sem internet ou serviço fora do ar: mantém como está */ }
+}
+
+if (CONFIG.twitchCanal && CONFIG.twitchCanal !== "SEUCANAL"){
+  checarLive();
+  setInterval(checarLive, 60000);   // confere de novo a cada 1 minuto
+}
+</script>
+</body>
+</html>
