@@ -11,16 +11,16 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600&display=swap" rel="stylesheet">
 <style>
-:root{--accent:#00000000;--muted:rgba(255,255,255,.72);--glass:rgba(53, 53, 53, 0);--line:rgba(205,160,255,.3)}
+:root{--accent:#fff;--muted:rgba(255,255,255,.72);--glass:rgba(24,24,28,.38);--line:rgba(255,255,255,.2)}
 *{box-sizing:border-box;margin:0}
-body{min-height:100vh;color:#fff;background:#0e0e0e77;font:400 1rem/1.5 Outfit,system-ui,"Segoe UI",sans-serif;-webkit-font-smoothing:antialiased}
+body{min-height:100vh;color:#fff;background:#0a0a0a;font:400 1rem/1.5 Outfit,system-ui,"Segoe UI",sans-serif;-webkit-font-smoothing:antialiased}
 a{color:inherit;text-decoration:none}
 button{font:inherit;color:inherit}
 :focus-visible{outline:2px solid #fff;outline-offset:3px;border-radius:8px}
-.bg-video{position:fixed;inset:0;width:100%;height:100%;object-fit:cover;object-position:50% 60%;z-index:-2;background:#0b0710}
-.bg-shade{position:fixed;inset:0;z-index:-1;background:rgba(8,4,14,.45)}
+.bg-video{position:fixed;inset:0;width:100%;height:100%;object-fit:cover;object-position:50% 60%;z-index:-2;background:#0a0a0a}
+.bg-shade{position:fixed;inset:0;z-index:-1;background:rgba(0,0,0,.4)}
 main{min-height:100vh;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:14px;padding:5rem 1rem 2.5rem}
-.card{background:var(--glass);backdrop-filter:blur(24px) saturate(1.3);-webkit-backdrop-filter:blur(24px) saturate(1.3);border-radius:26px}
+.card{width:min(640px,100%);background:var(--glass);backdrop-filter:blur(24px) saturate(1.3);-webkit-backdrop-filter:blur(24px) saturate(1.3);border:1px solid var(--line);border-radius:26px}
 
 /* perfil */
 .perfil{padding:2rem 1.5rem 1.5rem;text-align:center}
@@ -35,21 +35,33 @@ h1{margin-top:.6rem;font-size:2.1rem;font-weight:500;line-height:1.2;color:var(-
 .icones{display:flex;justify-content:center;gap:1rem;margin-top:1.1rem}
 .icones a{position:relative;width:46px;height:46px;display:grid;place-items:center;transition:transform .15s}
 .icones a:hover{transform:scale(1.12)}
-.icones svg{width:36px;height:36px;fill:#fff}
-.icones a.is-live::after{content:"";position:absolute;top:2px;right:2px;width:11px;height:11px;border-radius:50%;background:#e5253d;border:2px solid #22222252;animation:pulse 1.6s infinite}
+.icones svg{width:36px;height:36px;fill:#fff;filter:drop-shadow(0 0 5px rgba(255,255,255,.35));transition:filter .25s}
+.icones a[data-rede="youtube"]{--glow:#fff}
+.icones a[data-rede="twitch"]{--glow:#fff}
+.icones a[data-rede="discord"]{--glow:#fff}
+.icones a:not(:hover):not(:focus-visible) svg{animation:respira 3.2s ease-in-out infinite}
+.icones a:nth-child(2) svg{animation-delay:.5s!important}
+.icones a:nth-child(3) svg{animation-delay:1s!important}
+.icones a:hover svg,.icones a:focus-visible svg{filter:drop-shadow(0 0 6px var(--glow,#fff)) drop-shadow(0 0 18px var(--glow,#fff))}
+@keyframes respira{50%{filter:drop-shadow(0 0 11px rgba(255,255,255,.7))}}
+.icones a.is-live::after{content:"";position:absolute;top:2px;right:2px;width:11px;height:11px;border-radius:50%;background:#e5253d;border:2px solid #2a2a2e;animation:pulse 1.6s infinite}
 
 /* player de música */
 .player{display:flex;align-items:center;gap:1rem;padding:.85rem 1rem}
 .capa{flex:none;width:66px;height:66px;border-radius:14px;border:0;cursor:pointer;background:rgba(255,255,255,.22);display:grid;place-items:center;transition:background .15s}
 .capa:hover{background:rgba(255,255,255,.32)}
-.player[hidden],.abrir[hidden]{display:none}
+.player[hidden],.abrir-wrap[hidden]{display:none}
 .player.surge{animation:surge .3s ease}
 @keyframes surge{from{opacity:0;transform:translateY(-6px) scale(.98)}}
-.abrir{width:58px;height:58px;border-radius:50%;background:var(--glass);backdrop-filter:blur(24px) saturate(1.3);-webkit-backdrop-filter:blur(24px) saturate(1.3);cursor:pointer;display:grid;place-items:center;transition:transform .15s}
-.abrir:hover{transform:scale(1.08)}
-.abrir svg{width:26px;height:26px;fill:#fff}
+.abrir-wrap{position:relative;width:58px;height:58px}
+.abrir{position:absolute;left:0;top:0;height:58px;max-width:58px;display:flex;align-items:center;border-radius:999px;border:1px solid var(--line);background:var(--glass);backdrop-filter:blur(24px) saturate(1.3);-webkit-backdrop-filter:blur(24px) saturate(1.3);cursor:pointer;overflow:hidden;white-space:nowrap;transition:max-width .4s cubic-bezier(.4,0,.2,1)}
+.abrir:hover,.abrir:focus-visible{max-width:min(380px,calc(100vw - 2rem))}
+.abrir-ico{flex:none;width:56px;height:56px;display:grid;place-items:center}
+.abrir-ico svg{width:26px;height:26px;fill:#fff}
+.abrir-tit{padding-right:1.3rem;font-size:.95rem;font-weight:500;opacity:0;transform:translateX(-8px);transition:opacity .3s .08s,transform .4s cubic-bezier(.4,0,.2,1)}
+.abrir:hover .abrir-tit,.abrir:focus-visible .abrir-tit{opacity:1;transform:none}
 .abrir.tocando{animation:brilho 2.4s infinite}
-@keyframes brilho{50%{box-shadow:0 0 0 9px rgba(2, 2, 2, 0.2)}}
+@keyframes brilho{50%{box-shadow:0 0 0 9px rgba(255,255,255,.18)}}
 .capa svg{width:36px;height:36px;fill:#fff}
 .info{flex:1;min-width:0}
 .titulo{font-size:.95rem;font-weight:500;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
@@ -75,14 +87,39 @@ input.prog::-moz-range-thumb{width:10px;height:10px;border:0;border-radius:50%;b
 .v:hover p{text-decoration:underline;text-underline-offset:3px}
 
 /* botão de mudo e tela de entrada */
-.mudo{position:fixed;left:1rem;top:1rem;width:52px;height:52px;border-radius:14px;border:0;cursor:pointer;background:var(--glass);border:1px solid var(--line);backdrop-filter:blur(24px) saturate(1.3);-webkit-backdrop-filter:blur(24px) saturate(1.3);display:grid;place-items:center;z-index:5}
+.volume{position:fixed;left:1rem;top:1rem;z-index:5;display:flex;align-items:center;height:52px;max-width:52px;overflow:hidden;border-radius:14px;background:var(--glass);border:1px solid var(--line);backdrop-filter:blur(24px) saturate(1.3);-webkit-backdrop-filter:blur(24px) saturate(1.3);transition:max-width .4s cubic-bezier(.4,0,.2,1)}
+.volume:hover,.volume:focus-within,.volume.aberto{max-width:230px}
+.mudo{flex:none;width:50px;height:50px;border:0;background:none;cursor:pointer;display:grid;place-items:center}
 .mudo svg{width:26px;height:26px;fill:#fff}
-.entrada{position:fixed;inset:0;z-index:50;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:.8rem;background:rgba(60,24,100,.45);backdrop-filter:blur(22px);-webkit-backdrop-filter:blur(22px);border:0;cursor:pointer;transition:opacity .5s}
+input.vol{--v:50%;flex:none;width:130px;height:20px;margin:0 1.2rem 0 .1rem;background:transparent;cursor:pointer;opacity:0;transform:translateX(-8px);transition:opacity .3s .08s,transform .4s cubic-bezier(.4,0,.2,1);-webkit-appearance:none;appearance:none}
+.volume:hover input.vol,.volume:focus-within input.vol,.volume.aberto input.vol{opacity:1;transform:none}
+input.vol::-webkit-slider-runnable-track{height:8px;border-radius:99px;background:linear-gradient(90deg,#fff var(--v),rgba(255,255,255,.3) var(--v))}
+input.vol::-webkit-slider-thumb{-webkit-appearance:none;width:14px;height:14px;margin-top:-3px;border-radius:50%;background:#fff}
+input.vol::-moz-range-track{height:8px;border-radius:99px;background:rgba(255,255,255,.3)}
+input.vol::-moz-range-progress{height:8px;border-radius:99px;background:#fff}
+input.vol::-moz-range-thumb{width:14px;height:14px;border:0;border-radius:50%;background:#fff}
+.entrada{position:fixed;inset:0;z-index:50;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:.8rem;background:rgba(0,0,0,.5);backdrop-filter:blur(22px);-webkit-backdrop-filter:blur(22px);border:0;cursor:pointer;transition:opacity .5s}
 .entrada[hidden]{display:none}
 .entrada.sai{opacity:0;pointer-events:none}
 .entrada-nome{font-size:clamp(2.4rem,9vw,4.2rem);font-weight:600;letter-spacing:-.02em;color:var(--accent)}
 .entrada-dica{color:var(--muted);animation:pulse 1.8s infinite}
-@media (max-width:520px){.player{gap:.7rem;padding:.7rem}.capa{width:54px;height:54px}.ctrl{gap:.2rem}.v{grid-template-columns:96px 1fr}.v img{width:96px}}
+/* versão compacta */
+.perfil{width:min(240px,100%);padding:1.4rem 1.2rem 1.1rem}
+.avatar{width:96px;height:96px;font-size:2.3rem}
+h1{font-size:1.55rem;margin-top:.5rem}
+.frase{font-size:.9rem;color:var(--muted)}
+.icones{gap:.5rem;margin-top:.9rem}
+.icones a{width:42px;height:42px}
+.icones svg{width:30px;height:30px}
+.player{width:min(240px,100%);display:grid;grid-template-columns:auto 1fr;grid-template-areas:"capa titulo" "barra barra" "ctrl ctrl";gap:.55rem .7rem;align-items:center;padding:.8rem .9rem}
+.info{display:contents}
+.capa{grid-area:capa;width:40px;height:40px;border-radius:12px}
+.capa svg{width:22px;height:22px}
+.titulo{grid-area:titulo;font-size:.9rem}
+.barra{grid-area:barra;font-size:.8rem}
+.ctrl{grid-area:ctrl;justify-content:center;gap:.8rem}
+.videos{width:min(320px,100%)}
+@media (max-width:520px){.v{grid-template-columns:96px 1fr}.v img{width:96px}}
 @media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
 </style>
 </head>
@@ -94,7 +131,10 @@ input.prog::-moz-range-thumb{width:10px;height:10px;border:0;border-radius:50%;b
   <span class="entrada-nome" id="entradaNome"></span>
   <span class="entrada-dica">Clique para entrar</span>
 </button>
-<button class="mudo" id="mudo" type="button" aria-label="Silenciar música" title="Silenciar"></button>
+<div class="volume" id="volume">
+  <button class="mudo" id="mudo" type="button" aria-label="Silenciar música" title="Silenciar"></button>
+  <input class="vol" id="vol" type="range" min="0" max="100" value="50" aria-label="Volume">
+</div>
 
 <main>
   <section class="card perfil">
@@ -105,7 +145,11 @@ input.prog::-moz-range-thumb{width:10px;height:10px;border:0;border-radius:50%;b
     <nav class="icones" id="icones" aria-label="Redes"></nav>
   </section>
 
-  <button class="abrir" id="abrir" type="button" aria-expanded="false" aria-controls="player" aria-label="Abrir player de música" title="Música"></button>
+  <div class="abrir-wrap" id="abrirWrap">
+    <button class="abrir" id="abrir" type="button" aria-expanded="false" aria-controls="player" aria-label="Abrir player de música">
+      <span class="abrir-ico" id="abrirIco"></span><span class="abrir-tit" id="abrirTit"></span>
+    </button>
+  </div>
 
   <section class="card player" id="player" aria-label="Player de música" hidden>
     <button class="capa" id="fechar" type="button" aria-label="Recolher player" title="Recolher"></button>
@@ -137,12 +181,12 @@ input.prog::-moz-range-thumb{width:10px;height:10px;border:0;border-radius:50%;b
 const CONFIG = {
   nome: "Brenkz",
   avatar: "",                                  // ex.: "avatar.jpg" (foto na mesma pasta)
-  frase: "",
+  frase: "Vídeos sobre o que eu gosto de fazer.",
   twitchCanal: "brenkzftw",                    // só o nome do canal
   links: [
-    ["YouTube", "https://www.youtube.com/@brenkzftw"],
+    ["YouTube", "https://www.youtube.com/@SEUCANAL"],
     ["Twitch",  "https://www.twitch.tv/brenkzftw"],
-    ["Discord", "https://discord.gg/wfZv7F5bVB"]
+    ["Discord", "https://discord.gg/SEU-CONVITE"]
   ],
   musicas: [
     { arquivo: "musica.mp3", titulo: "GROOVY, B Jack$ - jersey luv" }
@@ -179,7 +223,7 @@ const av = $("avatar");
 if (CONFIG.avatar) { const i = new Image(); i.src = CONFIG.avatar; i.alt = ""; av.appendChild(i); }
 else av.textContent = CONFIG.nome.trim().charAt(0).toUpperCase();
 $("icones").innerHTML = CONFIG.links.map(([n, u]) =>
-  `<a href="${u}" target="_blank" rel="noopener" aria-label="${n}" title="${n}">${IC[n.toLowerCase()] || n}</a>`).join("");
+  `<a href="${u}" target="_blank" rel="noopener" aria-label="${n}" title="${n}" data-rede="${n.toLowerCase()}">${IC[n.toLowerCase()] || n}</a>`).join("");
 
 /* vídeos (só os que têm ID de verdade) */
 const reais = CONFIG.videos.filter(v => !v[0].startsWith("COLE"));
@@ -192,13 +236,13 @@ if (reais.length){
 /* player de música */
 const m = $("musica"), L = CONFIG.musicas;
 let faixa = 0;
-$("fechar").innerHTML = IC.nota; $("abrir").innerHTML = IC.nota; $("ant").innerHTML = IC.ant; $("prox").innerHTML = IC.prox;
+$("fechar").innerHTML = IC.nota; $("abrirIco").innerHTML = IC.nota; $("ant").innerHTML = IC.ant; $("prox").innerHTML = IC.prox;
 m.loop = L.length === 1; m.volume = 0.5;
 const fmt = s => isFinite(s) ? Math.floor(s / 60) + ":" + String(Math.floor(s % 60)).padStart(2, "0") : "0:00";
 function icones(){ $("abrir").classList.toggle("tocando", !m.paused); $("pp").innerHTML = m.paused ? IC.play : IC.pausa; $("pp").setAttribute("aria-label", m.paused ? "Tocar" : "Pausar"); }
 function carregar(n, tocar){
   faixa = (n + L.length) % L.length;
-  m.src = L[faixa].arquivo; $("titulo").textContent = L[faixa].titulo;
+  m.src = L[faixa].arquivo; $("titulo").textContent = $("abrirTit").textContent = L[faixa].titulo;
   if (tocar) m.play().catch(() => {});
 }
 carregar(0, false); icones();
@@ -217,7 +261,7 @@ $("prog").addEventListener("input", e => { if (m.duration) m.currentTime = (e.ta
 /* abrir e recolher o player (ícone <-> faixa completa) */
 function mostrarPlayer(abrir){
   const pl = $("player");
-  pl.hidden = !abrir; $("abrir").hidden = abrir;
+  pl.hidden = !abrir; $("abrirWrap").hidden = abrir;
   $("abrir").setAttribute("aria-expanded", abrir);
   if (abrir){ pl.classList.remove("surge"); void pl.offsetWidth; pl.classList.add("surge"); }
   else $("abrir").focus();
@@ -226,8 +270,30 @@ $("abrir").onclick = () => mostrarPlayer(true);
 $("fechar").onclick = () => mostrarPlayer(false);
 
 /* botão de silenciar (canto superior esquerdo) */
-function iconeMudo(){ $("mudo").innerHTML = m.muted ? IC.somOff : IC.somOn; $("mudo").title = m.muted ? "Ativar som" : "Silenciar"; $("mudo").setAttribute("aria-label", $("mudo").title); }
-$("mudo").onclick = () => { m.muted = !m.muted; iconeMudo(); };
+const vol = $("vol"), caixa = $("volume");
+function iconeMudo(){
+  const mudo = m.muted || m.volume === 0;
+  $("mudo").innerHTML = mudo ? IC.somOff : IC.somOn;
+  $("mudo").title = mudo ? "Ativar som" : "Silenciar";
+  $("mudo").setAttribute("aria-label", $("mudo").title);
+}
+/* no celular não existe "passar o mouse": o primeiro toque abre a barra, o segundo silencia */
+let tToque, soAbriu = false;
+function mantem(){ clearTimeout(tToque); tToque = setTimeout(() => caixa.classList.remove("aberto"), 3500); }
+$("mudo").addEventListener("pointerdown", e => {
+  if (e.pointerType === "mouse") return;
+  soAbriu = !caixa.classList.contains("aberto");
+  caixa.classList.add("aberto"); mantem();
+});
+$("mudo").onclick = () => {
+  if (soAbriu) { soAbriu = false; return; }
+  if (m.volume === 0) { m.volume = 0.5; vol.value = 50; vol.style.setProperty("--v", "50%"); }
+  m.muted = !m.muted; iconeMudo();
+};
+vol.addEventListener("input", () => {
+  m.volume = vol.value / 100; m.muted = false;
+  vol.style.setProperty("--v", vol.value + "%"); iconeMudo(); mantem();
+});
 iconeMudo();
 
 /* tenta tocar ao entrar; se o navegador bloquear, mostra "Clique para entrar" */
