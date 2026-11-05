@@ -11,7 +11,7 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600&display=swap" rel="stylesheet">
 <style>
-:root{--accent:#b653e6;--muted:rgba(255,255,255,.72);--glass:rgba(56,22,84,.4);--line:rgba(255,255,255,.14)}
+:root{--accent:#b653e6;--muted:rgba(255,255,255,.72);--glass:rgba(128,58,200,.26);--line:rgba(205,160,255,.3)}
 *{box-sizing:border-box;margin:0}
 body{min-height:100vh;color:#fff;background:#0b0710;font:400 1rem/1.5 Outfit,system-ui,"Segoe UI",sans-serif;-webkit-font-smoothing:antialiased}
 a{color:inherit;text-decoration:none}
@@ -20,7 +20,7 @@ button{font:inherit;color:inherit}
 .bg-video{position:fixed;inset:0;width:100%;height:100%;object-fit:cover;object-position:50% 60%;z-index:-2;background:#0b0710}
 .bg-shade{position:fixed;inset:0;z-index:-1;background:rgba(8,4,14,.45)}
 main{min-height:100vh;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:14px;padding:5rem 1rem 2.5rem}
-.card{width:min(640px,100%);background:var(--glass);backdrop-filter:blur(18px) saturate(1.2);-webkit-backdrop-filter:blur(18px) saturate(1.2);border:1px solid var(--line);border-radius:26px}
+.card{width:min(640px,100%);background:var(--glass);backdrop-filter:blur(24px) saturate(1.3);-webkit-backdrop-filter:blur(24px) saturate(1.3);border:1px solid var(--line);border-radius:26px}
 
 /* perfil */
 .perfil{padding:2rem 1.5rem 1.5rem;text-align:center}
@@ -36,11 +36,20 @@ h1{margin-top:.6rem;font-size:2.1rem;font-weight:500;line-height:1.2;color:var(-
 .icones a{position:relative;width:46px;height:46px;display:grid;place-items:center;transition:transform .15s}
 .icones a:hover{transform:scale(1.12)}
 .icones svg{width:36px;height:36px;fill:#fff}
-.icones a.is-live::after{content:"";position:absolute;top:2px;right:2px;width:11px;height:11px;border-radius:50%;background:#e5253d;border:2px solid #2a1040;animation:pulse 1.6s infinite}
+.icones a.is-live::after{content:"";position:absolute;top:2px;right:2px;width:11px;height:11px;border-radius:50%;background:#e5253d;border:2px solid #4a2478;animation:pulse 1.6s infinite}
 
 /* player de música */
 .player{display:flex;align-items:center;gap:1rem;padding:.85rem 1rem}
-.capa{flex:none;width:66px;height:66px;border-radius:14px;background:rgba(255,255,255,.22);display:grid;place-items:center}
+.capa{flex:none;width:66px;height:66px;border-radius:14px;border:0;cursor:pointer;background:rgba(255,255,255,.22);display:grid;place-items:center;transition:background .15s}
+.capa:hover{background:rgba(255,255,255,.32)}
+.player[hidden],.abrir[hidden]{display:none}
+.player.surge{animation:surge .3s ease}
+@keyframes surge{from{opacity:0;transform:translateY(-6px) scale(.98)}}
+.abrir{width:58px;height:58px;border-radius:50%;border:1px solid var(--line);background:var(--glass);backdrop-filter:blur(24px) saturate(1.3);-webkit-backdrop-filter:blur(24px) saturate(1.3);cursor:pointer;display:grid;place-items:center;transition:transform .15s}
+.abrir:hover{transform:scale(1.08)}
+.abrir svg{width:26px;height:26px;fill:#fff}
+.abrir.tocando{animation:brilho 2.4s infinite}
+@keyframes brilho{50%{box-shadow:0 0 0 9px rgba(182,83,230,.2)}}
 .capa svg{width:36px;height:36px;fill:#fff}
 .info{flex:1;min-width:0}
 .titulo{font-size:.95rem;font-weight:500;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
@@ -66,9 +75,9 @@ input.prog::-moz-range-thumb{width:10px;height:10px;border:0;border-radius:50%;b
 .v:hover p{text-decoration:underline;text-underline-offset:3px}
 
 /* botão de mudo e tela de entrada */
-.mudo{position:fixed;left:1rem;top:1rem;width:52px;height:52px;border-radius:14px;border:0;cursor:pointer;background:rgba(20,10,30,.6);backdrop-filter:blur(8px);display:grid;place-items:center;z-index:5}
+.mudo{position:fixed;left:1rem;top:1rem;width:52px;height:52px;border-radius:14px;border:0;cursor:pointer;background:var(--glass);border:1px solid var(--line);backdrop-filter:blur(24px) saturate(1.3);-webkit-backdrop-filter:blur(24px) saturate(1.3);display:grid;place-items:center;z-index:5}
 .mudo svg{width:26px;height:26px;fill:#fff}
-.entrada{position:fixed;inset:0;z-index:50;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:.8rem;background:rgba(10,6,16,.72);backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px);border:0;cursor:pointer;transition:opacity .5s}
+.entrada{position:fixed;inset:0;z-index:50;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:.8rem;background:rgba(60,24,100,.45);backdrop-filter:blur(22px);-webkit-backdrop-filter:blur(22px);border:0;cursor:pointer;transition:opacity .5s}
 .entrada[hidden]{display:none}
 .entrada.sai{opacity:0;pointer-events:none}
 .entrada-nome{font-size:clamp(2.4rem,9vw,4.2rem);font-weight:600;letter-spacing:-.02em;color:var(--accent)}
@@ -96,8 +105,10 @@ input.prog::-moz-range-thumb{width:10px;height:10px;border:0;border-radius:50%;b
     <nav class="icones" id="icones" aria-label="Redes"></nav>
   </section>
 
-  <section class="card player" aria-label="Player de música">
-    <div class="capa" id="capa" aria-hidden="true"></div>
+  <button class="abrir" id="abrir" type="button" aria-expanded="false" aria-controls="player" aria-label="Abrir player de música" title="Música"></button>
+
+  <section class="card player" id="player" aria-label="Player de música" hidden>
+    <button class="capa" id="fechar" type="button" aria-label="Recolher player" title="Recolher"></button>
     <div class="info">
       <p class="titulo" id="titulo"></p>
       <div class="barra">
@@ -181,10 +192,10 @@ if (reais.length){
 /* player de música */
 const m = $("musica"), L = CONFIG.musicas;
 let faixa = 0;
-$("capa").innerHTML = IC.nota; $("ant").innerHTML = IC.ant; $("prox").innerHTML = IC.prox;
+$("fechar").innerHTML = IC.nota; $("abrir").innerHTML = IC.nota; $("ant").innerHTML = IC.ant; $("prox").innerHTML = IC.prox;
 m.loop = L.length === 1; m.volume = 0.5;
 const fmt = s => isFinite(s) ? Math.floor(s / 60) + ":" + String(Math.floor(s % 60)).padStart(2, "0") : "0:00";
-function icones(){ $("pp").innerHTML = m.paused ? IC.play : IC.pausa; $("pp").setAttribute("aria-label", m.paused ? "Tocar" : "Pausar"); }
+function icones(){ $("abrir").classList.toggle("tocando", !m.paused); $("pp").innerHTML = m.paused ? IC.play : IC.pausa; $("pp").setAttribute("aria-label", m.paused ? "Tocar" : "Pausar"); }
 function carregar(n, tocar){
   faixa = (n + L.length) % L.length;
   m.src = L[faixa].arquivo; $("titulo").textContent = L[faixa].titulo;
@@ -202,6 +213,17 @@ m.addEventListener("timeupdate", () => {
   $("prog").value = p; $("prog").style.setProperty("--p", p + "%"); $("atual").textContent = fmt(m.currentTime);
 });
 $("prog").addEventListener("input", e => { if (m.duration) m.currentTime = (e.target.value / 100) * m.duration; });
+
+/* abrir e recolher o player (ícone <-> faixa completa) */
+function mostrarPlayer(abrir){
+  const pl = $("player");
+  pl.hidden = !abrir; $("abrir").hidden = abrir;
+  $("abrir").setAttribute("aria-expanded", abrir);
+  if (abrir){ pl.classList.remove("surge"); void pl.offsetWidth; pl.classList.add("surge"); }
+  else $("abrir").focus();
+}
+$("abrir").onclick = () => mostrarPlayer(true);
+$("fechar").onclick = () => mostrarPlayer(false);
 
 /* botão de silenciar (canto superior esquerdo) */
 function iconeMudo(){ $("mudo").innerHTML = m.muted ? IC.somOff : IC.somOn; $("mudo").title = m.muted ? "Ativar som" : "Silenciar"; $("mudo").setAttribute("aria-label", $("mudo").title); }
