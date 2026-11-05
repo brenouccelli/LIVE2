@@ -53,10 +53,20 @@ h2{font-size:.95rem;font-weight:600;color:var(--muted);margin:3rem 0 1rem}
 @media (prefers-reduced-motion:reduce){.dot{animation:none}}
 
 footer{margin-top:3.5rem;color:var(--muted);font-size:.9rem}
+.bg-video{position:fixed;inset:0;width:100%;height:100%;object-fit:cover;object-position:50% 60%;z-index:-2;background:#111}
+.bg-shade{position:fixed;inset:0;z-index:-1;background:linear-gradient(180deg,rgba(10,10,12,.55),rgba(10,10,12,.78))}
+:root{--bg:#171716;--text:#f1f0ec;--muted:#c4c1b9;--line:rgba(255,255,255,.22);--hover:rgba(255,255,255,.1)}
+body{background:transparent}
+.avatar{background:rgba(255,255,255,.18)}
+.video img,.video .ph{background:rgba(255,255,255,.12)}
 footer a{text-decoration:underline;text-underline-offset:3px}
 </style>
 </head>
 <body>
+  <video class="bg-video" id="bgVideo" autoplay muted loop playsinline preload="metadata" poster="fundo-poster.jpg" aria-hidden="true">
+  <source src="fundo.mp4" type="video/mp4">
+</video>
+<div class="bg-shade" aria-hidden="true"></div>
 <main>
   <div class="avatar" id="avatar" aria-hidden="true"></div>
   <h1 id="nome"></h1>
@@ -80,7 +90,7 @@ footer a{text-decoration:underline;text-underline-offset:3px}
 const CONFIG = {
   nome: "Brenkz",
   avatar: "",                       // ex.: "avatar.jpg"
-  bio: "Vídeos sobre o que eu gosto de fazer.",
+  bio: "",
   twitchCanal: "brenkzftw",          // só o nome do canal, ex.: "gaules" (sem link)
   links: [
     ["YouTube", "https://www.youtube.com/@SEUCANAL"],
@@ -124,6 +134,7 @@ $("videos").innerHTML = CONFIG.videos.map(([id, titulo]) => {
 }).join("");
 
 $("rodape").innerHTML = `<a href="mailto:${CONFIG.email}">${CONFIG.email}</a>`;
+if (matchMedia("(prefers-reduced-motion: reduce)").matches) $("bgVideo").pause();
 
 /* ---- Twitch: mostra "ao vivo" quando o canal estiver online ---- */
 const twLink = [...document.querySelectorAll("#links a")].find(a => a.href.includes("twitch.tv"));
