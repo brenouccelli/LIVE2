@@ -1,0 +1,481 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Personalize seu site</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,400;12..96,600;12..96,800&display=swap" rel="stylesheet">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
+<style>
+:root{
+  color-scheme: dark;
+  --bg:#12141a;
+  --panel:#1a1d25;
+  --line:#2c313d;
+  --ink:#eceef4;
+  --muted:#9aa1b2;
+  --accent:#8b9bff;
+  --accent-ink:#10132a;
+  --danger:#ff8a8a;
+  --font:"Bricolage Grotesque", system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+}
+*{box-sizing:border-box}
+html{height:100%}
+body{
+  margin:0; min-height:100%;
+  background:var(--bg); color:var(--ink);
+  font-family:var(--font); font-size:16px; line-height:1.5;
+}
+button,input{font:inherit;color:inherit}
+:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+
+.app{
+  display:grid; grid-template-columns:minmax(320px,400px) 1fr;
+  min-height:100vh;
+}
+.panel{
+  background:var(--panel); border-right:1px solid var(--line);
+  padding:28px 24px 32px; overflow-y:auto; max-height:100vh;
+  position:sticky; top:0;
+}
+h1{font-size:28px;line-height:1.1;font-weight:800;margin:0 0 8px;letter-spacing:-.02em}
+.lead{margin:0 0 28px;color:var(--muted);font-size:15px}
+h2{font-size:16px;font-weight:600;margin:28px 0 12px}
+
+/* slots de arquivo */
+.slot{
+  border:1.5px dashed var(--line); border-radius:12px;
+  padding:12px 14px; margin-bottom:10px;
+  transition:border-color .15s, background .15s;
+}
+.slot.drag{border-color:var(--accent);background:rgba(139,155,255,.08)}
+.slot.filled{border-style:solid}
+.slot-head{display:flex;justify-content:space-between;align-items:baseline;gap:8px}
+.slot-name{font-weight:600}
+.slot-hint{color:var(--muted);font-size:13px;margin:2px 0 10px}
+.slot-row{display:flex;align-items:center;gap:8px}
+.slot-file{
+  flex:1; min-width:0; font-size:13px; color:var(--muted);
+  white-space:nowrap; overflow:hidden; text-overflow:ellipsis;
+}
+.slot-file.warn{color:var(--danger)}
+.btn{
+  background:transparent; border:1px solid var(--line); border-radius:8px;
+  padding:6px 12px; cursor:pointer; font-size:14px;
+}
+.btn:hover{border-color:var(--muted)}
+.btn.small{padding:4px 10px;font-size:13px}
+.btn.primary{
+  background:var(--accent); color:var(--accent-ink);
+  border-color:var(--accent); font-weight:600; padding:10px 16px;
+}
+.btn.primary:hover{filter:brightness(1.08)}
+.btn:disabled{opacity:.5;cursor:wait}
+.slot input[type=file]{display:none}
+
+/* campos */
+.field{display:block;margin-bottom:14px}
+.field span{display:block;font-size:14px;margin-bottom:4px}
+.field small{display:block;color:var(--muted);font-size:12.5px;margin-top:4px}
+input[type=text]{
+  width:100%; background:var(--bg); border:1px solid var(--line);
+  border-radius:8px; padding:9px 11px;
+}
+input[type=text]:focus{border-color:var(--accent)}
+.range-row{display:flex;align-items:center;gap:12px}
+input[type=range]{flex:1;accent-color:var(--accent)}
+.range-val{width:44px;text-align:right;font-size:13px;color:var(--muted);font-variant-numeric:tabular-nums}
+input[type=color]{
+  width:44px;height:34px;padding:2px;border:1px solid var(--line);
+  border-radius:8px;background:var(--bg);cursor:pointer;
+}
+.color-row{display:flex;align-items:center;gap:12px}
+
+.actions{display:flex;gap:10px;margin-top:28px;flex-wrap:wrap}
+.status{min-height:20px;margin:12px 0 0;font-size:13.5px;color:var(--muted)}
+.status.error{color:var(--danger)}
+
+/* prévia */
+.preview{padding:28px;display:flex;flex-direction:column;justify-content:center;gap:14px;min-width:0}
+.browser{
+  border:1px solid var(--line); border-radius:14px; overflow:hidden;
+  background:var(--panel); box-shadow:0 20px 60px rgba(0,0,0,.4);
+}
+.tabbar{display:flex;align-items:center;gap:6px;background:#0d0f14;padding:8px 10px 0;height:40px}
+.tab{
+  display:flex;align-items:center;gap:8px;max-width:240px;
+  background:var(--panel);border-radius:8px 8px 0 0;padding:8px 12px;
+  font-size:13px;height:32px;
+}
+.tab img{width:16px;height:16px;object-fit:contain;flex:none}
+.tab .ph{width:16px;height:16px;border-radius:4px;background:var(--line);flex:none}
+.tab span{white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+
+.stage{
+  position:relative; aspect-ratio:16/10; width:100%;
+  background:linear-gradient(135deg,#242a3d,#12141a);
+  background-size:cover; background-position:center;
+  display:grid; place-items:center; text-align:center; overflow:hidden;
+}
+.stage video{position:absolute;inset:0;width:100%;height:100%;object-fit:cover}
+.stage .shade{position:absolute;inset:0;background:#000;opacity:.35}
+.stage .copy{position:relative;padding:24px;max-width:80%}
+.stage h3{margin:0;font-size:clamp(24px,4.4vw,56px);line-height:1.05;font-weight:800;letter-spacing:-.02em}
+.stage p{margin:10px 0 0;font-size:clamp(14px,1.8vw,20px);opacity:.9}
+.stage .music{
+  position:absolute; right:14px; bottom:14px;
+  background:rgba(0,0,0,.55); border:1px solid rgba(255,255,255,.35);
+  border-radius:999px; padding:7px 14px; cursor:pointer; font-size:13px; color:#fff;
+}
+.stage .music[hidden]{display:none}
+.stage .empty{
+  position:absolute;left:14px;bottom:12px;font-size:12.5px;color:rgba(255,255,255,.6);
+}
+.preview-note{margin:0;color:var(--muted);font-size:13.5px}
+
+@media (max-width:860px){
+  .app{grid-template-columns:1fr}
+  .panel{position:static;max-height:none;border-right:0;border-bottom:1px solid var(--line)}
+  .preview{padding:16px}
+}
+@media (prefers-reduced-motion:reduce){*{transition:none!important}}
+</style>
+</head>
+<body>
+<div class="app">
+  <aside class="panel">
+    <h1>Personalize seu site</h1>
+    <p class="lead">Troque os arquivos e os textos, veja o resultado ao lado e baixe o site pronto para publicar.</p>
+
+    <h2>Arquivos</h2>
+    <div id="slots"></div>
+
+    <h2>Textos</h2>
+    <label class="field"><span>Título da aba</span>
+      <input type="text" id="tabTitle" value="Meu site" maxlength="80"></label>
+    <label class="field"><span>Título principal</span>
+      <input type="text" id="heading" value="Meu site" maxlength="80"></label>
+    <label class="field"><span>Subtítulo</span>
+      <input type="text" id="subtitle" value="Escreva algo aqui" maxlength="140"></label>
+
+    <h2>Aparência</h2>
+    <div class="field">
+      <span>Cor do texto</span>
+      <div class="color-row">
+        <input type="color" id="color" value="#ffffff" aria-label="Cor do texto">
+        <small id="colorHex">#ffffff</small>
+      </div>
+    </div>
+    <div class="field">
+      <span>Escurecer o fundo</span>
+      <div class="range-row">
+        <input type="range" id="dim" min="0" max="90" value="35" aria-label="Escurecer o fundo">
+        <span class="range-val" id="dimVal">35%</span>
+      </div>
+    </div>
+    <div class="field">
+      <span>Volume da música</span>
+      <div class="range-row">
+        <input type="range" id="vol" min="0" max="100" value="60" aria-label="Volume da música">
+        <span class="range-val" id="volVal">60%</span>
+      </div>
+    </div>
+
+    <div class="actions">
+      <button class="btn primary" id="download" type="button">Baixar site (.zip)</button>
+      <button class="btn" id="reset" type="button">Restaurar</button>
+    </div>
+    <p class="status" id="status" role="status" aria-live="polite"></p>
+  </aside>
+
+  <section class="preview" aria-label="Prévia do site">
+    <div class="browser">
+      <div class="tabbar">
+        <div class="tab">
+          <span class="ph" id="tabPh"></span>
+          <img id="tabIcon" alt="" hidden>
+          <span id="tabText">Meu site</span>
+        </div>
+      </div>
+      <div class="stage" id="stage">
+        <video id="pvVideo" muted loop playsinline hidden></video>
+        <div class="shade" id="pvShade"></div>
+        <div class="copy" id="pvCopy">
+          <h3 id="pvHeading">Meu site</h3>
+          <p id="pvSub">Escreva algo aqui</p>
+        </div>
+        <button class="music" id="pvMusic" type="button" hidden>Tocar música</button>
+        <span class="empty" id="pvEmpty">Sem vídeo nem imagem de capa</span>
+      </div>
+    </div>
+    <p class="preview-note">Tudo acontece no seu navegador. Nenhum arquivo é enviado para a internet.</p>
+    <audio id="pvAudio" loop></audio>
+  </section>
+</div>
+
+<script>
+(function(){
+  var $ = function(id){ return document.getElementById(id); };
+
+  var SLOTS = [
+    { id:"video",   label:"Vídeo de fundo",  accept:"video/mp4,video/webm", hint:"MP4 ou WebM, toca em loop e sem som", dir:"assets/video", base:"fundo" },
+    { id:"poster",  label:"Imagem de capa",  accept:"image/*",              hint:"Aparece enquanto o vídeo carrega",     dir:"assets/img",   base:"fundo-poster" },
+    { id:"audio",   label:"Música",          accept:"audio/*",              hint:"MP3, OGG ou WAV",                      dir:"assets/audio", base:"musica" },
+    { id:"favicon", label:"Favicon",         accept:"image/png,image/svg+xml,image/x-icon,image/webp", hint:"O ícone da aba, PNG ou SVG", dir:"assets/img", base:"favicon" }
+  ];
+  var MAX_MB = 100; // limite do GitHub por arquivo
+
+  var files = {}, urls = {};
+  var slotEls = {};
+
+  function fmtSize(bytes){
+    if (bytes < 1024*1024) return Math.max(1, Math.round(bytes/1024)) + " KB";
+    return (bytes/1024/1024).toFixed(1).replace(".", ",") + " MB";
+  }
+  function setStatus(msg, isError){
+    var s = $("status"); s.textContent = msg || ""; s.className = "status" + (isError ? " error" : "");
+  }
+
+  /* ---------- slots ---------- */
+  var slotsBox = $("slots");
+  SLOTS.forEach(function(cfg){
+    var el = document.createElement("div");
+    el.className = "slot";
+    el.innerHTML =
+      '<div class="slot-head"><span class="slot-name"></span></div>' +
+      '<div class="slot-hint"></div>' +
+      '<div class="slot-row">' +
+        '<span class="slot-file">Nenhum arquivo. Arraste aqui ou escolha.</span>' +
+        '<button type="button" class="btn small pick">Escolher</button>' +
+        '<button type="button" class="btn small remove" hidden>Remover</button>' +
+      '</div>' +
+      '<input type="file">';
+    el.querySelector(".slot-name").textContent = cfg.label;
+    el.querySelector(".slot-hint").textContent = cfg.hint;
+    var input = el.querySelector("input");
+    input.accept = cfg.accept;
+    input.setAttribute("aria-label", cfg.label);
+    el.querySelector(".pick").addEventListener("click", function(){ input.click(); });
+    el.querySelector(".remove").addEventListener("click", function(){ setFile(cfg.id, null); });
+    input.addEventListener("change", function(){
+      if (input.files[0]) setFile(cfg.id, input.files[0]);
+      input.value = "";
+    });
+    el.addEventListener("dragover", function(e){ e.preventDefault(); el.classList.add("drag"); });
+    el.addEventListener("dragleave", function(){ el.classList.remove("drag"); });
+    el.addEventListener("drop", function(e){
+      e.preventDefault(); el.classList.remove("drag");
+      if (e.dataTransfer.files[0]) setFile(cfg.id, e.dataTransfer.files[0]);
+    });
+    slotsBox.appendChild(el);
+    slotEls[cfg.id] = el;
+  });
+
+  function kindOk(id, file){
+    var t = file.type || "";
+    var n = file.name.toLowerCase();
+    if (id === "video")  return t.indexOf("video/") === 0;
+    if (id === "audio")  return t.indexOf("audio/") === 0 || /\.(mp3|ogg|wav|m4a)$/.test(n);
+    if (id === "poster") return t.indexOf("image/") === 0;
+    if (id === "favicon") return t.indexOf("image/") === 0 || /\.ico$/.test(n);
+    return true;
+  }
+
+  function setFile(id, file){
+    if (file && !kindOk(id, file)){
+      setStatus("O arquivo “" + file.name + "” não é do tipo esperado para este campo.", true);
+      return;
+    }
+    if (urls[id]){ URL.revokeObjectURL(urls[id]); delete urls[id]; }
+    if (file){ files[id] = file; urls[id] = URL.createObjectURL(file); }
+    else { delete files[id]; }
+
+    var el = slotEls[id];
+    var label = el.querySelector(".slot-file");
+    el.classList.toggle("filled", !!file);
+    el.querySelector(".remove").hidden = !file;
+    el.querySelector(".pick").textContent = file ? "Trocar" : "Escolher";
+    if (file){
+      var big = file.size > MAX_MB*1024*1024;
+      label.textContent = file.name + " · " + fmtSize(file.size) + (big ? " (passa de 100 MB, o GitHub recusa)" : "");
+      label.classList.toggle("warn", big);
+      label.title = file.name;
+    } else {
+      label.textContent = "Nenhum arquivo. Arraste aqui ou escolha.";
+      label.classList.remove("warn");
+      label.title = "";
+    }
+    setStatus("");
+    applyMedia(id);
+  }
+
+  /* ---------- prévia ---------- */
+  var stage = $("stage"), pvVideo = $("pvVideo"), pvAudio = $("pvAudio"), pvMusic = $("pvMusic");
+
+  function updateEmpty(){
+    $("pvEmpty").hidden = !!(files.video || files.poster);
+  }
+
+  function applyMedia(id){
+    if (id === "video"){
+      if (files.video){
+        pvVideo.src = urls.video; pvVideo.hidden = false;
+        var p = pvVideo.play(); if (p && p.catch) p.catch(function(){});
+      } else {
+        pvVideo.pause(); pvVideo.removeAttribute("src"); pvVideo.load(); pvVideo.hidden = true;
+      }
+    }
+    if (id === "poster"){
+      if (files.poster){
+        stage.style.backgroundImage = "url(" + urls.poster + ")";
+        pvVideo.poster = urls.poster;
+      } else {
+        stage.style.backgroundImage = "";
+        pvVideo.removeAttribute("poster");
+      }
+    }
+    if (id === "audio"){
+      pvAudio.pause();
+      if (files.audio){ pvAudio.src = urls.audio; pvMusic.hidden = false; }
+      else { pvAudio.removeAttribute("src"); pvAudio.load(); pvMusic.hidden = true; }
+      pvMusic.textContent = "Tocar música";
+    }
+    if (id === "favicon"){
+      var img = $("tabIcon");
+      if (files.favicon){ img.src = urls.favicon; img.hidden = false; $("tabPh").hidden = true; }
+      else { img.removeAttribute("src"); img.hidden = true; $("tabPh").hidden = false; }
+    }
+    updateEmpty();
+  }
+
+  pvMusic.addEventListener("click", function(){
+    if (pvAudio.paused){ pvAudio.play().then(function(){ pvMusic.textContent = "Pausar música"; }).catch(function(){}); }
+    else { pvAudio.pause(); pvMusic.textContent = "Tocar música"; }
+  });
+
+  function applyText(){
+    $("tabText").textContent = $("tabTitle").value || "Sem título";
+    $("pvHeading").textContent = $("heading").value;
+    $("pvSub").textContent = $("subtitle").value;
+    $("pvCopy").style.color = $("color").value;
+    $("colorHex").textContent = $("color").value;
+    $("pvShade").style.opacity = $("dim").value / 100;
+    $("dimVal").textContent = $("dim").value + "%";
+    pvAudio.volume = $("vol").value / 100;
+    $("volVal").textContent = $("vol").value + "%";
+  }
+  ["tabTitle","heading","subtitle","color","dim","vol"].forEach(function(id){
+    $(id).addEventListener("input", applyText);
+  });
+
+  $("reset").addEventListener("click", function(){
+    SLOTS.forEach(function(c){ setFile(c.id, null); });
+    $("tabTitle").value = "Meu site";
+    $("heading").value = "Meu site";
+    $("subtitle").value = "Escreva algo aqui";
+    $("color").value = "#ffffff";
+    $("dim").value = 35; $("vol").value = 60;
+    applyText(); setStatus("");
+  });
+
+  /* ---------- exportação ---------- */
+  function extOf(file, fallback){
+    var m = /\.([a-z0-9]+)$/i.exec(file.name);
+    return m ? m[1].toLowerCase() : fallback;
+  }
+  function esc(s){
+    return String(s).replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;").replace(/"/g,"&quot;");
+  }
+  function iconMime(ext){
+    return { svg:"image/svg+xml", png:"image/png", ico:"image/x-icon", webp:"image/webp" }[ext] || "image/png";
+  }
+
+  function buildHtml(paths){
+    var title = $("tabTitle").value || "Meu site";
+    var color = $("color").value;
+    var dim = ($("dim").value / 100).toFixed(2);
+    var vol = ($("vol").value / 100).toFixed(2);
+
+    var head = '<meta charset="UTF-8">\n<meta name="viewport" content="width=device-width, initial-scale=1">\n' +
+               '<title>' + esc(title) + '</title>\n';
+    if (paths.favicon){
+      head += '<link rel="icon" type="' + iconMime(paths.faviconExt) + '" href="' + paths.favicon + '">\n';
+    }
+
+    var css =
+      'html,body{height:100%;margin:0}\n' +
+      'body{background:#000' + (paths.poster ? ' url(' + paths.poster + ') center/cover no-repeat' : '') + ';color:' + color + ';' +
+        'font-family:system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;display:grid;place-items:center;text-align:center;overflow:hidden}\n' +
+      '.bg{position:fixed;inset:0;width:100%;height:100%;object-fit:cover;z-index:-2}\n' +
+      '.shade{position:fixed;inset:0;background:#000;opacity:' + dim + ';z-index:-1}\n' +
+      '.copy{padding:24px;max-width:90%}\n' +
+      'h1{margin:0;font-size:clamp(32px,7vw,88px);line-height:1.05;letter-spacing:-.02em}\n' +
+      'p{margin:12px 0 0;font-size:clamp(16px,2.4vw,24px);opacity:.9}\n' +
+      '.music{position:fixed;right:16px;bottom:16px;background:rgba(0,0,0,.55);color:#fff;' +
+        'border:1px solid rgba(255,255,255,.35);border-radius:999px;padding:9px 18px;font:inherit;font-size:14px;cursor:pointer}\n';
+
+    var body = '';
+    if (paths.video){
+      body += '<video class="bg" autoplay muted loop playsinline' + (paths.poster ? ' poster="' + paths.poster + '"' : '') +
+              ' src="' + paths.video + '"></video>\n';
+    }
+    body += '<div class="shade"></div>\n' +
+            '<main class="copy">\n  <h1>' + esc($("heading").value) + '</h1>\n  <p>' + esc($("subtitle").value) + '</p>\n</main>\n';
+    if (paths.audio){
+      body += '<audio id="musica" src="' + paths.audio + '" loop></audio>\n' +
+              '<button class="music" id="btn" type="button">Tocar música</button>\n' +
+              '<script>\n' +
+              'var a=document.getElementById("musica"),b=document.getElementById("btn");\n' +
+              'a.volume=' + vol + ';\n' +
+              'b.addEventListener("click",function(){\n' +
+              '  if(a.paused){a.play();b.textContent="Pausar música";}\n' +
+              '  else{a.pause();b.textContent="Tocar música";}\n' +
+              '});\n' +
+              '<\/script>\n';
+    }
+
+    return '<!DOCTYPE html>\n<html lang="pt-BR">\n<head>\n' + head + '<style>\n' + css + '</style>\n</head>\n<body>\n' + body + '</body>\n</html>\n';
+  }
+
+  $("download").addEventListener("click", function(){
+    if (typeof JSZip === "undefined"){
+      setStatus("Não consegui carregar a biblioteca do ZIP. Confira a conexão e recarregue a página.", true);
+      return;
+    }
+    var btn = $("download");
+    btn.disabled = true; setStatus("Montando o ZIP…");
+
+    var zip = new JSZip();
+    var paths = {};
+    SLOTS.forEach(function(cfg){
+      var f = files[cfg.id];
+      if (!f) return;
+      var ext = extOf(f, cfg.id === "video" ? "mp4" : cfg.id === "audio" ? "mp3" : "png");
+      var path = cfg.dir + "/" + cfg.base + "." + ext;
+      paths[cfg.id] = path;
+      if (cfg.id === "favicon") paths.faviconExt = ext;
+      zip.file(path, f);
+    });
+
+    zip.file("index.html", buildHtml(paths));
+
+    zip.generateAsync({ type:"blob", compression:"STORE" }).then(function(blob){
+      var a = document.createElement("a");
+      a.href = URL.createObjectURL(blob);
+      a.download = "meu-site.zip";
+      document.body.appendChild(a); a.click(); a.remove();
+      setTimeout(function(){ URL.revokeObjectURL(a.href); }, 5000);
+      setStatus("Pronto! Descompacte o ZIP e envie os arquivos para o repositório.");
+    }).catch(function(err){
+      setStatus("Não foi possível gerar o ZIP: " + err.message, true);
+    }).then(function(){ btn.disabled = false; });
+  });
+
+  applyText();
+  updateEmpty();
+})();
+</script>
+</body>
+</html>
