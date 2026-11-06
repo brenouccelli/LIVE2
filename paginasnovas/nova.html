@@ -7,7 +7,6 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,400;12..96,600;12..96,800&display=swap" rel="stylesheet">
-<script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
 <style>
 :root{
   color-scheme: dark;
@@ -19,105 +18,76 @@
   --accent:#8b9bff;
   --accent-ink:#10132a;
   --danger:#ff8a8a;
+  --ok:#8fe0b0;
   --font:"Bricolage Grotesque", system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
 }
 *{box-sizing:border-box}
 html{height:100%}
-body{
-  margin:0; min-height:100%;
-  background:var(--bg); color:var(--ink);
-  font-family:var(--font); font-size:16px; line-height:1.5;
-}
+body{margin:0;min-height:100%;background:var(--bg);color:var(--ink);font-family:var(--font);font-size:16px;line-height:1.5}
 button,input{font:inherit;color:inherit}
 :focus-visible{outline:2px solid var(--accent);outline-offset:2px}
 
-.app{
-  display:grid; grid-template-columns:minmax(320px,400px) 1fr;
-  min-height:100vh;
-}
+.app{display:grid;grid-template-columns:minmax(320px,400px) 1fr;min-height:100vh}
 .panel{
-  background:var(--panel); border-right:1px solid var(--line);
-  padding:28px 24px 32px; overflow-y:auto; max-height:100vh;
-  position:sticky; top:0;
+  background:var(--panel);border-right:1px solid var(--line);
+  padding:28px 24px 32px;overflow-y:auto;max-height:100vh;position:sticky;top:0;
 }
 h1{font-size:28px;line-height:1.1;font-weight:800;margin:0 0 8px;letter-spacing:-.02em}
 .lead{margin:0 0 28px;color:var(--muted);font-size:15px}
 h2{font-size:16px;font-weight:600;margin:28px 0 12px}
 
-/* slots de arquivo */
-.slot{
-  border:1.5px dashed var(--line); border-radius:12px;
-  padding:12px 14px; margin-bottom:10px;
-  transition:border-color .15s, background .15s;
-}
+.slot{border:1.5px dashed var(--line);border-radius:12px;padding:12px 14px;margin-bottom:10px;transition:border-color .15s,background .15s}
 .slot.drag{border-color:var(--accent);background:rgba(139,155,255,.08)}
 .slot.filled{border-style:solid}
-.slot-head{display:flex;justify-content:space-between;align-items:baseline;gap:8px}
 .slot-name{font-weight:600}
 .slot-hint{color:var(--muted);font-size:13px;margin:2px 0 10px}
 .slot-row{display:flex;align-items:center;gap:8px}
-.slot-file{
-  flex:1; min-width:0; font-size:13px; color:var(--muted);
-  white-space:nowrap; overflow:hidden; text-overflow:ellipsis;
-}
-.slot-file.warn{color:var(--danger)}
+.slot-file{flex:1;min-width:0;font-size:13px;color:var(--muted);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.slot input[type=file]{display:none}
+.slot .link{margin-top:10px;font-size:13.5px;padding:7px 10px}
+
 .btn{
-  background:transparent; border:1px solid var(--line); border-radius:8px;
-  padding:6px 12px; cursor:pointer; font-size:14px;
+  display:inline-block;background:transparent;border:1px solid var(--line);border-radius:8px;
+  padding:6px 12px;cursor:pointer;font-size:14px;text-decoration:none;text-align:center;
 }
 .btn:hover{border-color:var(--muted)}
 .btn.small{padding:4px 10px;font-size:13px}
-.btn.primary{
-  background:var(--accent); color:var(--accent-ink);
-  border-color:var(--accent); font-weight:600; padding:10px 16px;
-}
+.btn.primary{background:var(--accent);color:var(--accent-ink);border-color:var(--accent);font-weight:600;padding:10px 16px}
 .btn.primary:hover{filter:brightness(1.08)}
 .btn:disabled{opacity:.5;cursor:wait}
-.slot input[type=file]{display:none}
 
-/* campos */
 .field{display:block;margin-bottom:14px}
-.field span{display:block;font-size:14px;margin-bottom:4px}
+.field>span{display:block;font-size:14px;margin-bottom:4px}
 .field small{display:block;color:var(--muted);font-size:12.5px;margin-top:4px}
-input[type=text]{
-  width:100%; background:var(--bg); border:1px solid var(--line);
-  border-radius:8px; padding:9px 11px;
-}
-input[type=text]:focus{border-color:var(--accent)}
-.range-row{display:flex;align-items:center;gap:12px}
+input[type=text],input[type=url]{width:100%;background:var(--bg);border:1px solid var(--line);border-radius:8px;padding:9px 11px}
+input[type=text]:focus,input[type=url]:focus{border-color:var(--accent)}
+.range-row,.color-row{display:flex;align-items:center;gap:12px}
 input[type=range]{flex:1;accent-color:var(--accent)}
 .range-val{width:44px;text-align:right;font-size:13px;color:var(--muted);font-variant-numeric:tabular-nums}
-input[type=color]{
-  width:44px;height:34px;padding:2px;border:1px solid var(--line);
-  border-radius:8px;background:var(--bg);cursor:pointer;
-}
-.color-row{display:flex;align-items:center;gap:12px}
+input[type=color]{width:44px;height:34px;padding:2px;border:1px solid var(--line);border-radius:8px;background:var(--bg);cursor:pointer}
 
 .actions{display:flex;gap:10px;margin-top:28px;flex-wrap:wrap}
 .status{min-height:20px;margin:12px 0 0;font-size:13.5px;color:var(--muted)}
 .status.error{color:var(--danger)}
 
-/* prévia */
+.result{margin-top:20px;padding:16px;border:1px solid var(--ok);border-radius:12px;background:rgba(143,224,176,.06)}
+.result[hidden]{display:none}
+.result h3{margin:0 0 10px;font-size:15px;color:var(--ok)}
+.result .actions{margin-top:10px}
+.result .note{margin:12px 0 0;font-size:13px;color:var(--muted)}
+
 .preview{padding:28px;display:flex;flex-direction:column;justify-content:center;gap:14px;min-width:0}
-.browser{
-  border:1px solid var(--line); border-radius:14px; overflow:hidden;
-  background:var(--panel); box-shadow:0 20px 60px rgba(0,0,0,.4);
-}
+.browser{border:1px solid var(--line);border-radius:14px;overflow:hidden;background:var(--panel);box-shadow:0 20px 60px rgba(0,0,0,.4)}
 .tabbar{display:flex;align-items:center;gap:6px;background:#0d0f14;padding:8px 10px 0;height:40px}
-.tab{
-  display:flex;align-items:center;gap:8px;max-width:240px;
-  background:var(--panel);border-radius:8px 8px 0 0;padding:8px 12px;
-  font-size:13px;height:32px;
-}
+.tab{display:flex;align-items:center;gap:8px;max-width:240px;background:var(--panel);border-radius:8px 8px 0 0;padding:8px 12px;font-size:13px;height:32px}
 .tab img{width:16px;height:16px;object-fit:contain;flex:none}
 .tab .ph{width:16px;height:16px;border-radius:4px;background:var(--line);flex:none}
 .tab span{white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 
 .stage{
-  position:relative; aspect-ratio:16/10; width:100%;
-  background:linear-gradient(135deg,#242a3d,#12141a);
-  background-size:cover; background-position:center;
-  display:grid; place-items:center; text-align:center; overflow:hidden;
+  position:relative;aspect-ratio:16/10;width:100%;
+  background:linear-gradient(135deg,#242a3d,#12141a);background-size:cover;background-position:center;
+  display:grid;place-items:center;text-align:center;overflow:hidden;
 }
 .stage video{position:absolute;inset:0;width:100%;height:100%;object-fit:cover}
 .stage .shade{position:absolute;inset:0;background:#000;opacity:.35}
@@ -125,14 +95,11 @@ input[type=color]{
 .stage h3{margin:0;font-size:clamp(24px,4.4vw,56px);line-height:1.05;font-weight:800;letter-spacing:-.02em}
 .stage p{margin:10px 0 0;font-size:clamp(14px,1.8vw,20px);opacity:.9}
 .stage .music{
-  position:absolute; right:14px; bottom:14px;
-  background:rgba(0,0,0,.55); border:1px solid rgba(255,255,255,.35);
-  border-radius:999px; padding:7px 14px; cursor:pointer; font-size:13px; color:#fff;
+  position:absolute;right:14px;bottom:14px;background:rgba(0,0,0,.55);
+  border:1px solid rgba(255,255,255,.35);border-radius:999px;padding:7px 14px;cursor:pointer;font-size:13px;color:#fff;
 }
 .stage .music[hidden]{display:none}
-.stage .empty{
-  position:absolute;left:14px;bottom:12px;font-size:12.5px;color:rgba(255,255,255,.6);
-}
+.stage .empty{position:absolute;left:14px;bottom:12px;font-size:12.5px;color:rgba(255,255,255,.6)}
 .preview-note{margin:0;color:var(--muted);font-size:13.5px}
 
 @media (max-width:860px){
@@ -147,7 +114,7 @@ input[type=color]{
 <div class="app">
   <aside class="panel">
     <h1>Personalize seu site</h1>
-    <p class="lead">Troque os arquivos e os textos, veja o resultado ao lado e baixe o site pronto para publicar.</p>
+    <p class="lead">Troque os arquivos e os textos, veja o resultado ao lado e crie a sua página com um link próprio.</p>
 
     <h2>Arquivos</h2>
     <div id="slots"></div>
@@ -184,10 +151,21 @@ input[type=color]{
     </div>
 
     <div class="actions">
-      <button class="btn primary" id="download" type="button">Baixar site (.zip)</button>
+      <button class="btn primary" id="create" type="button">Criar minha página</button>
       <button class="btn" id="reset" type="button">Restaurar</button>
     </div>
     <p class="status" id="status" role="status" aria-live="polite"></p>
+
+    <div class="result" id="result" hidden>
+      <h3>Sua página está pronta</h3>
+      <label class="field"><span>Link</span>
+        <input type="text" id="resultUrl" readonly></label>
+      <div class="actions">
+        <a class="btn primary" id="openLink" href="#" target="_blank" rel="noopener">Abrir página</a>
+        <button class="btn" id="copy" type="button">Copiar link</button>
+      </div>
+      <p class="note" id="resultNote"></p>
+    </div>
   </aside>
 
   <section class="preview" aria-label="Prévia do site">
@@ -210,7 +188,7 @@ input[type=color]{
         <span class="empty" id="pvEmpty">Sem vídeo nem imagem de capa</span>
       </div>
     </div>
-    <p class="preview-note">Tudo acontece no seu navegador. Nenhum arquivo é enviado para a internet.</p>
+    <p class="preview-note">Esta prévia roda no seu navegador. Os arquivos só saem dele se você usar links.</p>
     <audio id="pvAudio" loop></audio>
   </section>
 </div>
@@ -220,15 +198,13 @@ input[type=color]{
   var $ = function(id){ return document.getElementById(id); };
 
   var SLOTS = [
-    { id:"video",   label:"Vídeo de fundo",  accept:"video/mp4,video/webm", hint:"MP4 ou WebM, toca em loop e sem som", dir:"assets/video", base:"fundo" },
-    { id:"poster",  label:"Imagem de capa",  accept:"image/*",              hint:"Aparece enquanto o vídeo carrega",     dir:"assets/img",   base:"fundo-poster" },
-    { id:"audio",   label:"Música",          accept:"audio/*",              hint:"MP3, OGG ou WAV",                      dir:"assets/audio", base:"musica" },
-    { id:"favicon", label:"Favicon",         accept:"image/png,image/svg+xml,image/x-icon,image/webp", hint:"O ícone da aba, PNG ou SVG", dir:"assets/img", base:"favicon" }
+    { id:"video",   label:"Vídeo de fundo", accept:"video/mp4,video/webm", hint:"MP4 ou WebM, toca em loop e sem som" },
+    { id:"poster",  label:"Imagem de capa", accept:"image/*",              hint:"Aparece enquanto o vídeo carrega" },
+    { id:"audio",   label:"Música",         accept:"audio/*",              hint:"MP3, OGG ou WAV" },
+    { id:"favicon", label:"Favicon",        accept:"image/png,image/svg+xml,image/x-icon,image/webp", hint:"O ícone da aba, PNG ou SVG" }
   ];
-  var MAX_MB = 100; // limite do GitHub por arquivo
 
-  var files = {}, urls = {};
-  var slotEls = {};
+  var files = {}, urls = {}, links = {}, slotEls = {};
 
   function fmtSize(bytes){
     if (bytes < 1024*1024) return Math.max(1, Math.round(bytes/1024)) + " KB";
@@ -237,31 +213,40 @@ input[type=color]{
   function setStatus(msg, isError){
     var s = $("status"); s.textContent = msg || ""; s.className = "status" + (isError ? " error" : "");
   }
+  function isHttp(u){ return /^https?:\/\/\S+$/i.test(u); }
+  function src(id){ return urls[id] || (isHttp(links[id] || "") ? links[id] : ""); }
 
-  /* ---------- slots ---------- */
+  /* ---------- campos de arquivo ---------- */
   var slotsBox = $("slots");
   SLOTS.forEach(function(cfg){
     var el = document.createElement("div");
     el.className = "slot";
     el.innerHTML =
-      '<div class="slot-head"><span class="slot-name"></span></div>' +
+      '<span class="slot-name"></span>' +
       '<div class="slot-hint"></div>' +
       '<div class="slot-row">' +
         '<span class="slot-file">Nenhum arquivo. Arraste aqui ou escolha.</span>' +
         '<button type="button" class="btn small pick">Escolher</button>' +
         '<button type="button" class="btn small remove" hidden>Remover</button>' +
       '</div>' +
-      '<input type="file">';
+      '<input type="file">' +
+      '<input type="url" class="link" placeholder="ou cole um link (https://…)" autocomplete="off" spellcheck="false">';
     el.querySelector(".slot-name").textContent = cfg.label;
     el.querySelector(".slot-hint").textContent = cfg.hint;
-    var input = el.querySelector("input");
+    var input = el.querySelector('input[type=file]');
     input.accept = cfg.accept;
     input.setAttribute("aria-label", cfg.label);
+    var link = el.querySelector(".link");
+    link.setAttribute("aria-label", cfg.label + " (link)");
     el.querySelector(".pick").addEventListener("click", function(){ input.click(); });
     el.querySelector(".remove").addEventListener("click", function(){ setFile(cfg.id, null); });
     input.addEventListener("change", function(){
       if (input.files[0]) setFile(cfg.id, input.files[0]);
       input.value = "";
+    });
+    link.addEventListener("input", function(){
+      links[cfg.id] = link.value.trim();
+      applyMedia(cfg.id);
     });
     el.addEventListener("dragover", function(e){ e.preventDefault(); el.classList.add("drag"); });
     el.addEventListener("dragleave", function(){ el.classList.remove("drag"); });
@@ -274,11 +259,10 @@ input[type=color]{
   });
 
   function kindOk(id, file){
-    var t = file.type || "";
-    var n = file.name.toLowerCase();
-    if (id === "video")  return t.indexOf("video/") === 0;
-    if (id === "audio")  return t.indexOf("audio/") === 0 || /\.(mp3|ogg|wav|m4a)$/.test(n);
-    if (id === "poster") return t.indexOf("image/") === 0;
+    var t = file.type || "", n = file.name.toLowerCase();
+    if (id === "video")   return t.indexOf("video/") === 0;
+    if (id === "audio")   return t.indexOf("audio/") === 0 || /\.(mp3|ogg|wav|m4a)$/.test(n);
+    if (id === "poster")  return t.indexOf("image/") === 0;
     if (id === "favicon") return t.indexOf("image/") === 0 || /\.ico$/.test(n);
     return true;
   }
@@ -292,21 +276,12 @@ input[type=color]{
     if (file){ files[id] = file; urls[id] = URL.createObjectURL(file); }
     else { delete files[id]; }
 
-    var el = slotEls[id];
-    var label = el.querySelector(".slot-file");
+    var el = slotEls[id], label = el.querySelector(".slot-file");
     el.classList.toggle("filled", !!file);
     el.querySelector(".remove").hidden = !file;
     el.querySelector(".pick").textContent = file ? "Trocar" : "Escolher";
-    if (file){
-      var big = file.size > MAX_MB*1024*1024;
-      label.textContent = file.name + " · " + fmtSize(file.size) + (big ? " (passa de 100 MB, o GitHub recusa)" : "");
-      label.classList.toggle("warn", big);
-      label.title = file.name;
-    } else {
-      label.textContent = "Nenhum arquivo. Arraste aqui ou escolha.";
-      label.classList.remove("warn");
-      label.title = "";
-    }
+    label.textContent = file ? file.name + " · " + fmtSize(file.size) : "Nenhum arquivo. Arraste aqui ou escolha.";
+    label.title = file ? file.name : "";
     setStatus("");
     applyMedia(id);
   }
@@ -314,40 +289,33 @@ input[type=color]{
   /* ---------- prévia ---------- */
   var stage = $("stage"), pvVideo = $("pvVideo"), pvAudio = $("pvAudio"), pvMusic = $("pvMusic");
 
-  function updateEmpty(){
-    $("pvEmpty").hidden = !!(files.video || files.poster);
-  }
-
   function applyMedia(id){
+    var s = src(id);
     if (id === "video"){
-      if (files.video){
-        pvVideo.src = urls.video; pvVideo.hidden = false;
+      if (s){
+        if (pvVideo.getAttribute("src") !== s) pvVideo.src = s;
+        pvVideo.hidden = false;
         var p = pvVideo.play(); if (p && p.catch) p.catch(function(){});
       } else {
         pvVideo.pause(); pvVideo.removeAttribute("src"); pvVideo.load(); pvVideo.hidden = true;
       }
     }
     if (id === "poster"){
-      if (files.poster){
-        stage.style.backgroundImage = "url(" + urls.poster + ")";
-        pvVideo.poster = urls.poster;
-      } else {
-        stage.style.backgroundImage = "";
-        pvVideo.removeAttribute("poster");
-      }
+      if (s){ stage.style.backgroundImage = 'url("' + s.replace(/"/g, "%22") + '")'; pvVideo.poster = s; }
+      else { stage.style.backgroundImage = ""; pvVideo.removeAttribute("poster"); }
     }
     if (id === "audio"){
       pvAudio.pause();
-      if (files.audio){ pvAudio.src = urls.audio; pvMusic.hidden = false; }
+      if (s){ pvAudio.src = s; pvMusic.hidden = false; }
       else { pvAudio.removeAttribute("src"); pvAudio.load(); pvMusic.hidden = true; }
       pvMusic.textContent = "Tocar música";
     }
     if (id === "favicon"){
       var img = $("tabIcon");
-      if (files.favicon){ img.src = urls.favicon; img.hidden = false; $("tabPh").hidden = true; }
+      if (s){ img.src = s; img.hidden = false; $("tabPh").hidden = true; }
       else { img.removeAttribute("src"); img.hidden = true; $("tabPh").hidden = false; }
     }
-    updateEmpty();
+    $("pvEmpty").hidden = !!(src("video") || src("poster"));
   }
 
   pvMusic.addEventListener("click", function(){
@@ -371,110 +339,88 @@ input[type=color]{
   });
 
   $("reset").addEventListener("click", function(){
-    SLOTS.forEach(function(c){ setFile(c.id, null); });
+    SLOTS.forEach(function(c){
+      slotEls[c.id].querySelector(".link").value = ""; links[c.id] = "";
+      setFile(c.id, null);
+    });
     $("tabTitle").value = "Meu site";
     $("heading").value = "Meu site";
     $("subtitle").value = "Escreva algo aqui";
     $("color").value = "#ffffff";
     $("dim").value = 35; $("vol").value = 60;
+    $("result").hidden = true;
     applyText(); setStatus("");
   });
 
-  /* ---------- exportação ---------- */
-  function extOf(file, fallback){
-    var m = /\.([a-z0-9]+)$/i.exec(file.name);
-    return m ? m[1].toLowerCase() : fallback;
-  }
-  function esc(s){
-    return String(s).replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;").replace(/"/g,"&quot;");
-  }
-  function iconMime(ext){
-    return { svg:"image/svg+xml", png:"image/png", ico:"image/x-icon", webp:"image/webp" }[ext] || "image/png";
+  /* ---------- criar a página ---------- */
+  function encode(obj){
+    var b64 = btoa(unescape(encodeURIComponent(JSON.stringify(obj))));
+    return b64.replace(/\+/g, "-").replace(/\//g, "_").replace(/=+$/, "");
   }
 
-  function buildHtml(paths){
-    var title = $("tabTitle").value || "Meu site";
-    var color = $("color").value;
-    var dim = ($("dim").value / 100).toFixed(2);
-    var vol = ($("vol").value / 100).toFixed(2);
-
-    var head = '<meta charset="UTF-8">\n<meta name="viewport" content="width=device-width, initial-scale=1">\n' +
-               '<title>' + esc(title) + '</title>\n';
-    if (paths.favicon){
-      head += '<link rel="icon" type="' + iconMime(paths.faviconExt) + '" href="' + paths.favicon + '">\n';
-    }
-
-    var css =
-      'html,body{height:100%;margin:0}\n' +
-      'body{background:#000' + (paths.poster ? ' url(' + paths.poster + ') center/cover no-repeat' : '') + ';color:' + color + ';' +
-        'font-family:system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;display:grid;place-items:center;text-align:center;overflow:hidden}\n' +
-      '.bg{position:fixed;inset:0;width:100%;height:100%;object-fit:cover;z-index:-2}\n' +
-      '.shade{position:fixed;inset:0;background:#000;opacity:' + dim + ';z-index:-1}\n' +
-      '.copy{padding:24px;max-width:90%}\n' +
-      'h1{margin:0;font-size:clamp(32px,7vw,88px);line-height:1.05;letter-spacing:-.02em}\n' +
-      'p{margin:12px 0 0;font-size:clamp(16px,2.4vw,24px);opacity:.9}\n' +
-      '.music{position:fixed;right:16px;bottom:16px;background:rgba(0,0,0,.55);color:#fff;' +
-        'border:1px solid rgba(255,255,255,.35);border-radius:999px;padding:9px 18px;font:inherit;font-size:14px;cursor:pointer}\n';
-
-    var body = '';
-    if (paths.video){
-      body += '<video class="bg" autoplay muted loop playsinline' + (paths.poster ? ' poster="' + paths.poster + '"' : '') +
-              ' src="' + paths.video + '"></video>\n';
-    }
-    body += '<div class="shade"></div>\n' +
-            '<main class="copy">\n  <h1>' + esc($("heading").value) + '</h1>\n  <p>' + esc($("subtitle").value) + '</p>\n</main>\n';
-    if (paths.audio){
-      body += '<audio id="musica" src="' + paths.audio + '" loop></audio>\n' +
-              '<button class="music" id="btn" type="button">Tocar música</button>\n' +
-              '<script>\n' +
-              'var a=document.getElementById("musica"),b=document.getElementById("btn");\n' +
-              'a.volume=' + vol + ';\n' +
-              'b.addEventListener("click",function(){\n' +
-              '  if(a.paused){a.play();b.textContent="Pausar música";}\n' +
-              '  else{a.pause();b.textContent="Tocar música";}\n' +
-              '});\n' +
-              '<\/script>\n';
-    }
-
-    return '<!DOCTYPE html>\n<html lang="pt-BR">\n<head>\n' + head + '<style>\n' + css + '</style>\n</head>\n<body>\n' + body + '</body>\n</html>\n';
-  }
-
-  $("download").addEventListener("click", function(){
-    if (typeof JSZip === "undefined"){
-      setStatus("Não consegui carregar a biblioteca do ZIP. Confira a conexão e recarregue a página.", true);
-      return;
-    }
-    var btn = $("download");
-    btn.disabled = true; setStatus("Montando o ZIP…");
-
-    var zip = new JSZip();
-    var paths = {};
-    SLOTS.forEach(function(cfg){
-      var f = files[cfg.id];
-      if (!f) return;
-      var ext = extOf(f, cfg.id === "video" ? "mp4" : cfg.id === "audio" ? "mp3" : "png");
-      var path = cfg.dir + "/" + cfg.base + "." + ext;
-      paths[cfg.id] = path;
-      if (cfg.id === "favicon") paths.faviconExt = ext;
-      zip.file(path, f);
+  function saveLocal(id, blobs){
+    return new Promise(function(resolve, reject){
+      if (!window.indexedDB){ reject(new Error("Este navegador não permite guardar arquivos.")); return; }
+      var req = indexedDB.open("criador-site", 1);
+      req.onupgradeneeded = function(){ req.result.createObjectStore("paginas"); };
+      req.onerror = function(){ reject(req.error || new Error("Não foi possível abrir o armazenamento.")); };
+      req.onsuccess = function(){
+        var db = req.result, tx = db.transaction("paginas", "readwrite");
+        tx.objectStore("paginas").put(blobs, id);
+        tx.oncomplete = function(){ db.close(); resolve(); };
+        tx.onerror = tx.onabort = function(){ db.close(); reject(tx.error || new Error("Falha ao guardar os arquivos.")); };
+      };
     });
+  }
 
-    zip.file("index.html", buildHtml(paths));
+  $("create").addEventListener("click", function(){
+    var cfg = {
+      t: $("tabTitle").value, h: $("heading").value, s: $("subtitle").value,
+      c: $("color").value, d: +$("dim").value, v: +$("vol").value, m: {}
+    };
+    var blobs = {}, hasLocal = false, i, c;
 
-    zip.generateAsync({ type:"blob", compression:"STORE" }).then(function(blob){
-      var a = document.createElement("a");
-      a.href = URL.createObjectURL(blob);
-      a.download = "meu-site.zip";
-      document.body.appendChild(a); a.click(); a.remove();
-      setTimeout(function(){ URL.revokeObjectURL(a.href); }, 5000);
-      setStatus("Pronto! Descompacte o ZIP e envie os arquivos para o repositório.");
+    for (i = 0; i < SLOTS.length; i++){
+      c = SLOTS[i];
+      var link = (links[c.id] || "").trim();
+      if (link){
+        if (!isHttp(link)){ setStatus("O link de “" + c.label + "” precisa começar com http:// ou https://.", true); return; }
+        cfg.m[c.id] = link;
+      } else if (files[c.id]){
+        cfg.m[c.id] = "local"; blobs[c.id] = files[c.id]; hasLocal = true;
+      }
+    }
+
+    var btn = $("create");
+    btn.disabled = true; setStatus("Criando sua página…");
+
+    var id = Math.random().toString(36).slice(2, 8) + Date.now().toString(36).slice(-3);
+    var saved = hasLocal ? (cfg.i = id, saveLocal(id, blobs)) : Promise.resolve();
+
+    saved.then(function(){
+      var url = new URL("ver.html", location.href).href + "#" + encode(cfg);
+      $("resultUrl").value = url;
+      $("openLink").href = url;
+      $("resultNote").textContent = hasLocal
+        ? "Os arquivos enviados ficam só neste navegador. Em outro aparelho, a página mostra os textos e as cores, mas não o vídeo, a imagem nem a música enviados. Para compartilhar tudo, cole links nos campos de cada arquivo."
+        : "Todos os arquivos vêm de links, então a página abre igual em qualquer aparelho.";
+      $("result").hidden = false;
+      $("result").scrollIntoView({ block: "nearest" });
+      setStatus("");
     }).catch(function(err){
-      setStatus("Não foi possível gerar o ZIP: " + err.message, true);
+      setStatus("Não foi possível criar a página: " + err.message, true);
     }).then(function(){ btn.disabled = false; });
   });
 
+  $("copy").addEventListener("click", function(){
+    var field = $("resultUrl"), b = $("copy");
+    function done(){ b.textContent = "Link copiado"; setTimeout(function(){ b.textContent = "Copiar link"; }, 2000); }
+    if (navigator.clipboard && navigator.clipboard.writeText){
+      navigator.clipboard.writeText(field.value).then(done).catch(function(){ field.select(); });
+    } else { field.select(); document.execCommand("copy"); done(); }
+  });
+
   applyText();
-  updateEmpty();
 })();
 </script>
 </body>
