@@ -1,88 +1,361 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Meu Site</title>
-    <style>
-        body {
-            font-family: Arial, sans-serif;
-            background-color: #f4f4f9;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            height: 100vh;
-            margin: 0;
-        }
-        .container {
-            background: #ffffff;
-            padding: 30px;
-            border-radius: 8px;
-            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
-            text-align: center;
-        }
-        input[type="text"] {
-            padding: 10px;
-            width: 80%;
-            margin-bottom: 15px;
-            border: 1px solid #ccc;
-            border-radius: 4px;
-        }
-        button {
-            padding: 10px 20px;
-            background-color: #007BFF;
-            color: white;
-            border: none;
-            border-radius: 4px;
-            cursor: pointer;
-            font-weight: bold;
-        }
-        button:hover {
-            background-color: #0056b3;
-        }
-    </style>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>Brenkz</title>
+<link rel="icon" type="image/svg+xml" href="assets/img/favicon.svg">
+<link rel="icon" type="image/png" href="assets/img/favicon.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+:root{color-scheme:dark;--bg:#09090c;--side:#101015;--card:#15131b;--line:#27222f;--ink:#f2f0f7;--mut:#9b95a8;--ac:#8b5cf6;--acd:#3b2470;--font:"Outfit",system-ui,sans-serif}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--ink);font:16px/1.5 var(--font);display:grid;grid-template-columns:270px 1fr;min-height:100vh}
+button,input,select{font:inherit;color:inherit}
+:focus-visible{outline:2px solid var(--ac);outline-offset:2px}
+aside{background:var(--side);border-right:1px solid var(--line);padding:22px 16px;display:flex;flex-direction:column;gap:6px;position:sticky;top:0;height:100vh}
+.logo{font-size:22px;font-weight:600;margin:0 8px 18px}
+.logo b{color:var(--ac)}
+.nav{display:flex;align-items:center;gap:10px;width:100%;padding:12px 14px;border:0;border-radius:12px;background:none;cursor:pointer;text-align:left;font-weight:500}
+.nav:hover{background:#1b1824}
+.nav.on{background:var(--acd)}
+.sp{flex:1}
+.btn{border:1px solid var(--line);background:var(--card);border-radius:12px;padding:11px 16px;cursor:pointer;font-weight:500}
+.btn:hover{border-color:var(--ac)}
+.btn.pri{background:var(--acd);border-color:var(--ac)}
+.me{display:flex;align-items:center;gap:10px;padding:10px;border-radius:12px;background:var(--card);margin-top:6px}
+.me i{width:34px;height:34px;border-radius:50%;background:#2b2735;display:grid;place-items:center;font-style:normal;font-weight:600}
+.me small{display:block;color:var(--mut)}
+main{padding:34px 40px 60px;max-width:1200px;width:100%}
+h1{font-size:24px;font-weight:500;margin:0 0 18px}
+h2{font-size:20px;font-weight:500;margin:34px 0 14px}
+.panel{background:var(--card);border:1px solid var(--line);border-radius:18px;padding:22px}
+.g4{display:grid;grid-template-columns:repeat(auto-fit,minmax(210px,1fr));gap:16px}
+.g3{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:22px}
+.stat{background:#1d1329;border:1px solid #3a2656;border-radius:16px;padding:18px}
+.stat b{display:block;font-size:26px;font-weight:600}
+.stat small{color:var(--mut)}
+label.f{display:block;font-weight:500}
+label.f>span{display:block;margin-bottom:8px}
+input[type=text],input[type=url],select{width:100%;background:#0d0c11;border:1px solid var(--line);border-radius:12px;padding:12px 14px}
+input[type=text]:focus,input[type=url]:focus,select:focus{border-color:var(--ac)}
+input[type=range]{width:100%;accent-color:var(--ac)}
+input[type=color]{width:100%;height:46px;background:#0d0c11;border:1px solid var(--line);border-radius:12px;padding:4px;cursor:pointer}
+.tile{position:relative;height:150px;border:1px dashed #3a3446;border-radius:14px;background:#0d0c11 center/cover;display:grid;place-items:center;text-align:center;color:var(--mut);cursor:pointer;padding:12px;overflow:hidden;font-size:14px}
+.tile:hover{border-color:var(--ac)}
+.tile span{background:rgba(0,0,0,.6);border-radius:8px;padding:2px 8px;max-width:100%;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;color:#fff}
+.tile .rm{position:absolute;top:8px;right:8px;width:28px;height:28px;border-radius:50%;border:0;background:rgba(0,0,0,.7);cursor:pointer}
+.tile input{display:none}
+.bar{height:12px;border-radius:99px;background:#0d0c11;overflow:hidden;margin:10px 0 16px}
+.bar i{display:block;height:100%;width:0;background:var(--ac);transition:width .3s}
+.chk{display:flex;flex-wrap:wrap;gap:10px}
+.chk .btn.done{opacity:.55;text-decoration:line-through}
+.tg{display:flex;gap:8px;flex-wrap:wrap}
+.tg .btn.on{background:#173d26;border-color:#2c7a4b}
+.row{display:grid;grid-template-columns:150px 1fr auto;gap:10px;margin-bottom:10px;align-items:center}
+.row b{font-weight:500}
+.add{display:grid;grid-template-columns:150px 1fr auto;gap:10px}
+#toast{position:fixed;left:50%;bottom:24px;transform:translateX(-50%);background:#241d33;border:1px solid var(--ac);border-radius:12px;padding:10px 18px;opacity:0;pointer-events:none;transition:opacity .2s;z-index:99}
+#toast.on{opacity:1}
+[hidden]{display:none!important}
+
+/* página do perfil */
+#pf{position:fixed;inset:0;z-index:50;background:#000 center/cover;display:grid;place-items:center;overflow:auto;color:var(--tx)}
+#pf video,#pf canvas{position:fixed;inset:0;width:100%;height:100%;object-fit:cover;pointer-events:none}
+#pfx{position:fixed;top:16px;right:16px;z-index:3;width:44px;height:44px;border-radius:12px;border:1px solid #fff4;background:#000a;color:#fff;font-size:22px;cursor:pointer}
+#pfbox{position:relative;z-index:2;width:min(340px,92vw);padding:24px 0}
+.pc{text-align:center;padding:26px 22px;border-radius:24px;border:1px solid #ffffff22;background:var(--pcb);backdrop-filter:blur(var(--bl));-webkit-backdrop-filter:blur(var(--bl))}
+.av{width:104px;height:104px;border-radius:50%;margin:0 auto 12px;background:#33303c;display:grid;place-items:center;font-size:44px;font-weight:600;overflow:hidden;border:2px solid var(--pac)}
+.av img{width:100%;height:100%;object-fit:cover}
+.nm{margin:0;font-size:28px;font-weight:600}
+.nm.g{text-shadow:0 0 16px var(--pac),0 0 4px var(--pac)}
+.nm.rb{background:linear-gradient(90deg,#f66,#fc6,#6f6,#6cf,#c6f,#f66);background-size:200%;-webkit-background-clip:text;background-clip:text;color:transparent;animation:rb 4s linear infinite}
+@keyframes rb{to{background-position:200% 0}}
+.pc p{margin:6px 0;opacity:.9}
+.pc small{opacity:.7}
+.lk{display:flex;justify-content:center;gap:8px;flex-wrap:wrap;margin-top:14px}
+.lk a{color:var(--tx);text-decoration:none;border:1px solid #ffffff30;border-radius:10px;padding:6px 12px;font-size:14px}
+.lk.gl a{text-shadow:0 0 10px var(--pac);box-shadow:0 0 12px -2px var(--pac)}
+.pl{margin-top:14px;padding:16px;border-radius:22px;border:1px solid #ffffff22;background:var(--pcb);backdrop-filter:blur(var(--bl));-webkit-backdrop-filter:blur(var(--bl))}
+.pl h4{margin:0 0 10px;font-weight:500;font-size:15px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.pl .t{display:flex;align-items:center;gap:10px;font-size:13px}
+.pl .t input{flex:1;accent-color:var(--pac)}
+.pl button{margin-top:8px;width:46px;height:46px;border-radius:50%;border:0;background:var(--pac);color:#fff;font-size:18px;cursor:pointer}
+
+@media(max-width:860px){
+  body{grid-template-columns:1fr}
+  aside{position:static;height:auto;flex-direction:row;flex-wrap:wrap;align-items:center}
+  .logo{width:100%;margin-bottom:4px}.nav{width:auto}.sp,.me{display:none}
+  main{padding:22px 16px 50px}
+  .row,.add{grid-template-columns:1fr}
+}
+@media(prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
+</style>
 </head>
 <body>
+<aside>
+  <div class="logo">meu<b>perfil</b></div>
+  <button class="nav on" data-v="conta">Conta</button>
+  <button class="nav" data-v="pers">Personalizar</button>
+  <button class="nav" data-v="links">Links</button>
+  <div class="sp"></div>
+  <button class="btn pri" id="open">Minha página</button>
+  <button class="btn" id="prev">Pré-visualizar</button>
+  <button class="btn" id="reset">Restaurar tudo</button>
+  <div class="me"><i id="mi">B</i><div><b id="mn">brenkz</b><small>Perfil local</small></div></div>
+</aside>
 
-    <div class="container">
-        <h1>Bem-vindo ao Meu Site</h1>
-        <p>Digite o nome da nova página:</p>
-        
-        <!-- Campo onde a pessoa coloca o nome -->
-        <input type="text" id="nomePagina" placeholder="Ex: perfil, contato, servicos">
-        <br>
-        
-        <!-- Botão MINHA PAGINA -->
-        <button id="btnMinhaPagina">MINHA PAGINA</button>
+<main>
+  <!-- CONTA -->
+  <section id="v-conta">
+    <h1>Visão geral da conta</h1>
+    <div class="g4">
+      <div class="stat"><small>Nome de usuário</small><b id="sU">—</b><small>Edite abaixo</small></div>
+      <div class="stat"><small>Links adicionados</small><b id="sL">0</b><small>na sua página</small></div>
+      <div class="stat"><small>Arquivos enviados</small><b id="sF">0</b><small>de 4 possíveis</small></div>
+      <div class="stat"><small>Visualizações do perfil</small><b id="sV">0</b><small>neste navegador</small></div>
     </div>
+    <h2>Conclusão do perfil</h2>
+    <div class="panel">
+      <b id="pp">0% concluído</b>
+      <div class="bar"><i id="pb"></i></div>
+      <div class="chk" id="chk"></div>
+    </div>
+    <h2>Gerencie sua conta</h2>
+    <div class="panel">
+      <label class="f"><span>Nome de usuário</span>
+        <div style="display:flex;gap:10px"><input type="text" id="un" maxlength="24" autocomplete="off"><button class="btn pri" id="unb">Salvar</button></div></label>
+    </div>
+  </section>
 
-    <script>
-        document.getElementById('btnMinhaPagina').addEventListener('click', function() {
-            const nomeDigitado = document.getElementById('nomePagina').value.trim();
-            
-            if (nomeDigitado === "") {
-                alert("Por favor, insira um nome para a página!");
-                return;
-            }
+  <!-- PERSONALIZAR -->
+  <section id="v-pers" hidden>
+    <h1>Envio de mídias</h1>
+    <div class="panel"><div class="g4" id="tiles"></div></div>
 
-            // Formata o nome para ser seguro como URL/arquivo (remove espaços e acentos básicos)
-            const nomeFormatado = nomeDigitado
-                .toLowerCase()
-                .normalize("NFD")
-                .replace(/[\u0300-\u036f]/g, "")
-                .replace(/\s+/g, '-');
+    <h2>Personalização geral</h2>
+    <div class="panel"><div class="g3">
+      <label class="f"><span>Descrição</span><input type="text" data-k="desc" maxlength="120" placeholder="esta é minha descrição"></label>
+      <label class="f"><span>Localização</span><input type="text" data-k="loc" maxlength="40" placeholder="Minha localização"></label>
+      <label class="f"><span>Efeitos de fundo</span>
+        <select data-k="fx"><option value="none">Nenhum</option><option value="neve">Neve</option><option value="estrelas">Estrelas</option></select></label>
+      <label class="f"><span>Efeitos do nome de usuário</span>
+        <select data-k="nfx"><option value="none">Nenhum</option><option value="glow">Brilho</option><option value="rb">Arco-íris</option></select></label>
+      <label class="f"><span>Opacidade do perfil: <em data-o="op">50%</em></span><input type="range" min="0" max="100" data-k="op"></label>
+      <label class="f"><span>Desfoque do perfil: <em data-o="blur">0px</em></span><input type="range" min="0" max="40" data-k="blur"></label>
+      <div class="f"><span>Configurações de brilho</span>
+        <div class="tg"><button class="btn" data-g="n">Nome de usuário</button><button class="btn" data-g="l">Redes</button></div></div>
+    </div></div>
 
-            // Caminho simulado na pasta paginasnovas/
-            const caminhoArquivo = `paginasnovas/${nomeFormatado}.html`;
+    <h2>Personalização de cores</h2>
+    <div class="panel"><div class="g3">
+      <label class="f"><span>Cor de destaque</span><input type="color" data-k="col.ac"></label>
+      <label class="f"><span>Cor do texto</span><input type="color" data-k="col.tx"></label>
+      <label class="f"><span>Cor do cartão</span><input type="color" data-k="col.cd"></label>
+    </div></div>
+  </section>
 
-            // Redireciona ou simula a criação/abertura da página
-            console.log(`Abrindo o arquivo: ${caminhoArquivo}`);
-            alert(`Redirecionando para: ${caminhoArquivo}`);
-            
-            // Exemplo de redirecionamento (caso o arquivo já exista no servidor/repositório)
-            window.location.href = caminhoArquivo;
-        });
-    </script>
+  <!-- LINKS -->
+  <section id="v-links" hidden>
+    <h1>Links</h1>
+    <div class="panel">
+      <div class="add">
+        <select id="lp"><option>YouTube</option><option>Twitch</option><option>Discord</option><option>Instagram</option><option>TikTok</option><option>GitHub</option><option>Site</option></select>
+        <input type="url" id="lu" placeholder="https://…" autocomplete="off" spellcheck="false">
+        <button class="btn pri" id="la">Adicionar</button>
+      </div>
+      <div id="ll" style="margin-top:18px"></div>
+    </div>
+  </section>
+</main>
 
+<div id="pf" hidden>
+  <video id="pfv" muted loop playsinline hidden></video><canvas id="pfc"></canvas>
+  <button id="pfx" aria-label="Fechar">×</button>
+  <div id="pfbox"></div>
+</div>
+<div id="toast" role="status"></div>
+
+<script>
+(function(){
+const $=s=>document.querySelector(s),$$=s=>[...document.querySelectorAll(s)];
+const esc=s=>String(s).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+const http=u=>/^https?:\/\/\S+$/i.test(u);
+const KEY='painel-v1';
+const S={user:'brenkz',desc:'',loc:'',op:50,blur:0,fx:'none',nfx:'none',glow:{n:true,l:false},col:{ac:'#8b5cf6',tx:'#ffffff',cd:'#0d0d12'},links:[],views:0,names:{}};
+try{const o=JSON.parse(localStorage.getItem(KEY)||'{}');for(const k in o){S[k]=(o[k]&&typeof o[k]==='object'&&!Array.isArray(o[k]))?Object.assign(S[k]||{},o[k]):o[k]}}catch(e){}
+const F={},U={};
+const TILES=[{k:'bg',t:'Plano de fundo',a:'image/*,video/*',h:'Clique para enviar um arquivo'},{k:'audio',t:'Áudio',a:'audio/*',h:'Clique para enviar uma música'},{k:'avatar',t:'Avatar do perfil',a:'image/*',h:'Clique para enviar um arquivo'},{k:'cursor',t:'Cursor personalizado',a:'image/png,image/svg+xml,image/x-icon,image/gif',h:'Clique para enviar um arquivo'}];
+
+/* armazenamento de arquivos */
+const DB=new Promise((res,rej)=>{if(!window.indexedDB)return rej();const r=indexedDB.open('painel',1);r.onupgradeneeded=()=>r.result.createObjectStore('f');r.onsuccess=()=>res(r.result);r.onerror=()=>rej(r.error)});
+const tx=(m,f)=>DB.then(d=>new Promise((res,rej)=>{const t=d.transaction('f',m),q=f(t.objectStore('f'));t.oncomplete=()=>res(q&&q.result);t.onerror=()=>rej(t.error)}));
+function toast(m){const t=$('#toast');t.textContent=m;t.classList.add('on');clearTimeout(toast.h);toast.h=setTimeout(()=>t.classList.remove('on'),2200)}
+function save(){try{localStorage.setItem(KEY,JSON.stringify(S))}catch(e){toast('Não foi possível salvar neste navegador.')}paint()}
+
+function setFile(k,f){
+  if(U[k]){URL.revokeObjectURL(U[k]);delete U[k]}
+  if(f){F[k]=f;U[k]=URL.createObjectURL(f);S.names[k]=f.name;tx('readwrite',s=>s.put(f,k)).catch(()=>toast('Arquivo grande demais para guardar. Ele vale só até fechar a aba.'))}
+  else{delete F[k];delete S.names[k];tx('readwrite',s=>s.delete(k)).catch(()=>{})}
+  save();tiles();
+}
+function tiles(){
+  const box=$('#tiles');box.innerHTML='';
+  TILES.forEach(c=>{
+    const d=document.createElement('div');d.className='tile';d.tabIndex=0;d.setAttribute('role','button');d.setAttribute('aria-label',c.t);
+    const f=F[c.k];
+    d.innerHTML='<b style="position:absolute;top:10px;left:12px;color:#fff;font-weight:500;text-shadow:0 1px 4px #000">'+esc(c.t)+'</b>'+(f?'<span>'+esc(f.name)+'</span><button class="rm" aria-label="Remover">×</button>':'<div>'+esc(c.h)+'</div>')+'<input type="file" accept="'+c.a+'">';
+    if(f&&f.type.indexOf('image/')===0)d.style.backgroundImage='url("'+U[c.k]+'")';
+    const inp=d.querySelector('input');
+    d.addEventListener('click',e=>{if(e.target.closest('.rm'))return;inp.click()});
+    d.addEventListener('keydown',e=>{if(e.key==='Enter'||e.key===' '){e.preventDefault();inp.click()}});
+    inp.addEventListener('change',()=>{const x=inp.files[0];if(!x)return;
+      const ok=c.k==='audio'?x.type.indexOf('audio/')===0:c.k==='bg'?/^(image|video)\//.test(x.type):x.type.indexOf('image/')===0;
+      if(!ok)return toast('Tipo de arquivo inválido para '+c.t+'.');
+      if(c.k==='cursor'&&x.size>200*1024)toast('Cursores grandes podem não aparecer. O ideal é até 128×128 px.');
+      setFile(c.k,x)});
+    const rm=d.querySelector('.rm');if(rm)rm.addEventListener('click',()=>setFile(c.k,null));
+    box.appendChild(d);
+  });
+}
+
+/* campos ligados ao estado */
+const gp=k=>k.split('.').reduce((o,p)=>o[p],S);
+const sp=(k,v)=>{const p=k.split('.'),l=p.pop();p.reduce((o,x)=>o[x],S)[l]=v};
+$$('[data-k]').forEach(el=>{
+  el.value=gp(el.dataset.k);
+  el.addEventListener('input',()=>{sp(el.dataset.k,el.type==='range'?+el.value:el.value);save()});
+});
+$$('[data-g]').forEach(b=>b.addEventListener('click',()=>{S.glow[b.dataset.g]=!S.glow[b.dataset.g];save()}));
+
+/* navegação */
+function go(v){$$('main>section').forEach(s=>s.hidden=s.id!=='v-'+v);$$('.nav').forEach(n=>n.classList.toggle('on',n.dataset.v===v))}
+$$('.nav').forEach(n=>n.addEventListener('click',()=>go(n.dataset.v)));
+
+/* conta */
+$('#unb').addEventListener('click',()=>{const v=$('#un').value.trim();if(!v)return toast('Digite um nome de usuário.');S.user=v;save();toast('Nome de usuário salvo.')});
+$('#un').addEventListener('keydown',e=>{if(e.key==='Enter')$('#unb').click()});
+
+/* links */
+function links(){
+  const box=$('#ll');box.innerHTML='';
+  if(!S.links.length)box.innerHTML='<p style="color:var(--mut);margin:0">Nenhum link ainda.</p>';
+  S.links.forEach((l,i)=>{
+    const r=document.createElement('div');r.className='row';
+    r.innerHTML='<b>'+esc(l.p)+'</b><input type="url" value="'+esc(l.u)+'" aria-label="Link de '+esc(l.p)+'"><button class="btn">Remover</button>';
+    r.querySelector('input').addEventListener('input',e=>{l.u=e.target.value.trim();save()});
+    r.querySelector('button').addEventListener('click',()=>{S.links.splice(i,1);save();links()});
+    box.appendChild(r);
+  });
+}
+$('#la').addEventListener('click',()=>{const u=$('#lu').value.trim();if(!http(u))return toast('Cole um link que comece com http:// ou https://.');S.links.push({p:$('#lp').value,u});$('#lu').value='';save();links()});
+$('#lu').addEventListener('keydown',e=>{if(e.key==='Enter')$('#la').click()});
+
+/* atualização da interface */
+function paint(){
+  const nm=S.user||'usuário';
+  $('#mn').textContent=nm;$('#mi').textContent=nm[0].toUpperCase();$('#sU').textContent=nm;$('#un').value=$('#un').value||nm;
+  $('#sL').textContent=S.links.filter(l=>http(l.u)).length;$('#sF').textContent=Object.keys(F).length;$('#sV').textContent=S.views;
+  $$('[data-o]').forEach(o=>o.textContent=S[o.dataset.o]+(o.dataset.o==='blur'?'px':'%'));
+  $$('[data-g]').forEach(b=>b.classList.toggle('on',!!S.glow[b.dataset.g]));
+  const items=[['Enviar um avatar',!!F.avatar,'pers'],['Adicionar uma descrição',!!S.desc.trim(),'pers'],['Adicionar redes sociais',S.links.some(l=>http(l.u)),'links'],['Enviar um plano de fundo',!!F.bg,'pers']];
+  const pct=items.filter(i=>i[1]).length*25;
+  $('#pp').textContent=pct+'% concluído';$('#pb').style.width=pct+'%';
+  const c=$('#chk');c.innerHTML='';
+  items.forEach(i=>{const b=document.createElement('button');b.className='btn'+(i[1]?' done':'');b.textContent=i[0];b.addEventListener('click',()=>go(i[2]));c.appendChild(b)});
+}
+
+/* página do perfil */
+let A=null,run=false;
+const rgba=(h,a)=>{const n=parseInt(h.slice(1),16);return 'rgba('+(n>>16)+','+(n>>8&255)+','+(n&255)+','+a+')'};
+function fx(){
+  const cv=$('#pfc'),g=cv.getContext('2d');
+  if(S.fx==='none'){g.clearRect(0,0,cv.width,cv.height);return}
+  cv.width=innerWidth;cv.height=innerHeight;
+  const P=Array.from({length:S.fx==='neve'?90:70},()=>({x:Math.random()*cv.width,y:Math.random()*cv.height,r:Math.random()*2.2+.6,s:Math.random()*1+.4,p:Math.random()*6}));
+  run=true;
+  (function f(){
+    if(!run)return;g.clearRect(0,0,cv.width,cv.height);
+    P.forEach(p=>{
+      if(S.fx==='neve'){p.y+=p.s;p.x+=Math.sin(p.p+=.01);if(p.y>cv.height){p.y=-5;p.x=Math.random()*cv.width}g.globalAlpha=.85}
+      else{g.globalAlpha=.3+.7*Math.abs(Math.sin(p.p+=.02*p.s))}
+      g.fillStyle='#fff';g.beginPath();g.arc(p.x,p.y,p.r,0,7);g.fill();
+    });requestAnimationFrame(f);
+  })();
+}
+const mmss=t=>isFinite(t)?Math.floor(t/60)+':'+String(Math.floor(t%60)).padStart(2,'0'):'0:00';
+function openPage(){
+  S.views++;save();
+  const pf=$('#pf'),v=$('#pfv'),nm=S.user||'usuário';
+  pf.style.setProperty('--pac',S.col.ac);pf.style.setProperty('--tx',S.col.tx);
+  pf.style.setProperty('--pcb',rgba(S.col.cd,S.op/100));pf.style.setProperty('--bl',S.blur+'px');
+  pf.style.cursor=U.cursor?'url("'+U.cursor+'") 0 0, auto':'';
+  pf.style.backgroundImage='';v.hidden=true;v.removeAttribute('src');
+  if(F.bg){if(F.bg.type.indexOf('video/')===0){v.src=U.bg;v.hidden=false;v.play().catch(()=>{})}else pf.style.backgroundImage='url("'+U.bg+'")'}
+  const lk=S.links.filter(l=>http(l.u)).map(l=>'<a href="'+esc(l.u)+'" target="_blank" rel="noopener">'+esc(l.p)+'</a>').join('');
+  $('#pfbox').innerHTML='<section class="pc"><div class="av">'+(U.avatar?'<img src="'+U.avatar+'" alt="">':esc(nm[0].toUpperCase()))+'</div>'+
+    '<h2 class="nm'+(S.nfx==='glow'||S.glow.n?' g':'')+(S.nfx==='rb'?' rb':'')+'">'+esc(nm)+'</h2>'+
+    (S.desc?'<p>'+esc(S.desc)+'</p>':'')+(S.loc?'<small>📍 '+esc(S.loc)+'</small>':'')+
+    (lk?'<div class="lk'+(S.glow.l?' gl':'')+'">'+lk+'</div>':'')+'</section>'+
+    (U.audio?'<div class="pl"><h4>'+esc(F.audio.name.replace(/\.[^.]+$/,''))+'</h4><div class="t"><span id="t0">0:00</span><input type="range" id="sk" min="0" max="100" value="0" aria-label="Progresso"><span id="t1">0:00</span></div><button id="pp2" aria-label="Tocar">▶</button></div>':'');
+  if(A){A.pause();A=null}
+  if(U.audio){
+    A=new Audio(U.audio);const sk=$('#sk'),b=$('#pp2');
+    A.addEventListener('loadedmetadata',()=>$('#t1').textContent=mmss(A.duration));
+    A.addEventListener('timeupdate',()=>{$('#t0').textContent=mmss(A.currentTime);if(A.duration)sk.value=A.currentTime/A.duration*100});
+    A.addEventListener('ended',()=>b.textContent='▶');
+    sk.addEventListener('input',()=>{if(A.duration)A.currentTime=sk.value/100*A.duration});
+    b.addEventListener('click',()=>{if(A.paused){A.play().then(()=>{b.textContent='❚❚'}).catch(()=>toast('O navegador bloqueou o áudio.'))}else{A.pause();b.textContent='▶'}});
+  }
+  pf.hidden=false;document.body.style.overflow='hidden';$('#pfx').focus();fx();
+}
+function closePage(){run=false;$('#pf').hidden=true;$('#pfv').pause();if(A){A.pause();A=null}document.body.style.overflow=''}
+/* publicação: o servidor gera paginasnovas/<nome>.html no GitHub */
+const WORKER_URL="https://painel-brenkz.bre-uccelli.workers.dev";
+const KEYK='painel-key';
+const slug=s=>String(s).toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g,'').replace(/[^a-z0-9-]+/g,'-').replace(/^-+|-+$/g,'').slice(0,24);
+const b64=f=>new Promise((res,rej)=>{const r=new FileReader();r.onload=()=>res(r.result.split(',')[1]);r.onerror=rej;r.readAsDataURL(f)});
+async function publish(){
+  if(!WORKER_URL){toast('Publicação ainda não configurada. Mostrando a prévia.');return openPage()}
+  const u=slug(S.user);
+  if(u.length<3)return toast('Use um nome de usuário com pelo menos 3 letras ou números.');
+  let key=localStorage.getItem(KEYK);
+  if(!key){key=crypto.randomUUID()+crypto.randomUUID();localStorage.setItem(KEYK,key)}
+  const btn=$('#open');btn.disabled=true;btn.textContent='Publicando…';
+  try{
+    const media={};let total=0;
+    for(const k in F){total+=F[k].size;media[k]={name:F[k].name,type:F[k].type,data:await b64(F[k])}}
+    if(total>20*1024*1024)throw new Error('Os arquivos passam de 20 MB no total.');
+    const cfg={user:S.user,desc:S.desc,loc:S.loc,op:S.op,blur:S.blur,fx:S.fx,nfx:S.nfx,glow:S.glow,col:S.col,links:S.links.filter(l=>http(l.u))};
+    const r=await fetch(WORKER_URL,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({slug:u,key,cfg,media})});
+    const j=await r.json().catch(()=>({}));
+    if(!r.ok)throw new Error(j.erro||'Falha ao publicar.');
+    btn.textContent='Aguardando o GitHub…';
+    for(let i=0;i<45;i++){
+      const ok=await fetch(j.url+'?t='+Date.now(),{cache:'no-store'}).then(x=>x.ok?x.text():'').then(t=>t.includes(j.v)).catch(()=>false);
+      if(ok)break;await new Promise(z=>setTimeout(z,4000));
+    }
+    location.href=j.url;
+  }catch(e){toast(e.message||'Não foi possível publicar.')}
+  btn.disabled=false;btn.textContent='Minha página';
+}
+$('#prev').addEventListener('click',openPage);
+$('#open').addEventListener('click',publish);
+$('#pfx').addEventListener('click',closePage);
+addEventListener('keydown',e=>{if(e.key==='Escape'&&!$('#pf').hidden)closePage()});
+
+$('#reset').addEventListener('click',()=>{
+  if(!confirm('Apagar todas as configurações e arquivos deste painel?'))return;
+  try{localStorage.removeItem(KEY)}catch(e){}
+  tx('readwrite',s=>s.clear()).catch(()=>{}).then(()=>location.reload());
+});
+
+/* início: recarrega os arquivos guardados */
+paint();links();tiles();
+['bg','audio','avatar','cursor'].forEach(k=>tx('readonly',s=>s.get(k)).then(f=>{if(f){F[k]=f;U[k]=URL.createObjectURL(f);S.names[k]=f.name;tiles();paint()}}).catch(()=>{}));
+})();
+</script>
 </body>
 </html>
