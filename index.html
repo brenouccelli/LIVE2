@@ -102,6 +102,7 @@ input[type=color]{width:100%;height:46px;background:#0d0c11;border:1px solid var
   <button class="nav" data-v="links">Links</button>
   <div class="sp"></div>
   <button class="btn pri" id="open">Minha página</button>
+  <button class="btn" id="prev">Pré-visualizar</button>
   <button class="btn" id="reset">Restaurar tudo</button>
   <div class="me"><i id="mi">B</i><div><b id="mn">brenkz</b><small>Perfil local</small></div></div>
 </aside>
@@ -311,7 +312,37 @@ function openPage(){
   pf.hidden=false;document.body.style.overflow='hidden';$('#pfx').focus();fx();
 }
 function closePage(){run=false;$('#pf').hidden=true;$('#pfv').pause();if(A){A.pause();A=null}document.body.style.overflow=''}
-$('#open').addEventListener('click',openPage);
+/* publicação: o servidor gera paginasnovas/<nome>.html no GitHub */
+const WORKER_URL="https://painel-brenkz.bre-uccelli.workers.dev";
+const KEYK='painel-key';
+const slug=s=>String(s).toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g,'').replace(/[^a-z0-9-]+/g,'-').replace(/^-+|-+$/g,'').slice(0,24);
+const b64=f=>new Promise((res,rej)=>{const r=new FileReader();r.onload=()=>res(r.result.split(',')[1]);r.onerror=rej;r.readAsDataURL(f)});
+async function publish(){
+  if(!WORKER_URL){toast('Publicação ainda não configurada. Mostrando a prévia.');return openPage()}
+  const u=slug(S.user);
+  if(u.length<3)return toast('Use um nome de usuário com pelo menos 3 letras ou números.');
+  let key=localStorage.getItem(KEYK);
+  if(!key){key=crypto.randomUUID()+crypto.randomUUID();localStorage.setItem(KEYK,key)}
+  const btn=$('#open');btn.disabled=true;btn.textContent='Publicando…';
+  try{
+    const media={};let total=0;
+    for(const k in F){total+=F[k].size;media[k]={name:F[k].name,type:F[k].type,data:await b64(F[k])}}
+    if(total>20*1024*1024)throw new Error('Os arquivos passam de 20 MB no total.');
+    const cfg={user:S.user,desc:S.desc,loc:S.loc,op:S.op,blur:S.blur,fx:S.fx,nfx:S.nfx,glow:S.glow,col:S.col,links:S.links.filter(l=>http(l.u))};
+    const r=await fetch(WORKER_URL,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({slug:u,key,cfg,media})});
+    const j=await r.json().catch(()=>({}));
+    if(!r.ok)throw new Error(j.erro||'Falha ao publicar.');
+    btn.textContent='Aguardando o GitHub…';
+    for(let i=0;i<45;i++){
+      const ok=await fetch(j.url+'?t='+Date.now(),{cache:'no-store'}).then(x=>x.ok?x.text():'').then(t=>t.includes(j.v)).catch(()=>false);
+      if(ok)break;await new Promise(z=>setTimeout(z,4000));
+    }
+    location.href=j.url;
+  }catch(e){toast(e.message||'Não foi possível publicar.')}
+  btn.disabled=false;btn.textContent='Minha página';
+}
+$('#prev').addEventListener('click',openPage);
+$('#open').addEventListener('click',publish);
 $('#pfx').addEventListener('click',closePage);
 addEventListener('keydown',e=>{if(e.key==='Escape'&&!$('#pf').hidden)closePage()});
 
